@@ -1,0 +1,1 @@
+{"failure_window": {"start": "2026-10-31T10:46Z", "end": "2026-10-31T10:49Z"}, "fault_class": "error_injection", "release_related": false, "root_cause_service": "payment"}

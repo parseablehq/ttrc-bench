@@ -1,0 +1,34 @@
+# B1 Tempo: compose service `tempo` on the grafana-community chart, monolithic. generate.py writes tempo.yaml
+# from this file plus `config`, stacks/b1-lgtm/config/tempo.yaml verbatim, so Tempo runs that file. Resources
+# come from the profile.
+fullnameOverride: tempo
+
+tempo:
+  registry: docker.io
+  repository: grafana/tempo
+  tag: 3.1.0@sha256:3076b8dcdfb32fd6bc5ccef85e7b7313e6199b9cb84366257fc17ecb696db5fd
+  extraArgs:
+    target: all
+  # compose runs Tempo as 0:0
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+    runAsNonRoot: false
+  # compose gates no traffic on readiness: a backend slow to answer /ready under load stays in its Service (5 min)
+  readinessProbe:
+    failureThreshold: 30
+
+securityContext:
+  runAsUser: 0
+  runAsGroup: 0
+  runAsNonRoot: false
+  fsGroup: null
+
+podLabels: {otb.stack: b1-lgtm, otb.role: backend}
+
+persistence:
+  enabled: true
+  enableStatefulSetAutoDeletePVC: false
+
+tempoQuery:
+  enabled: false

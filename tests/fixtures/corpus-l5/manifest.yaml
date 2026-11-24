@@ -1,0 +1,57 @@
+format: otb-archive/1
+name: corpus-l5
+corpus_id: d71825af61bf3be4775ca7b38c0400532451bc6c04a0cf2ae150a690aa36b87e
+sealed: true
+created_utc: '2026-10-29T21:58:39Z'
+window:
+  start: 1791158400000000000
+  end: 1791331200000000000
+instances:
+- default
+streams:
+- g0
+source:
+  demo_repo: 'synthetic: tests/fixtures/make_corpus_l5.py'
+  demo_commit: none
+  demo_tag: none
+  service_images: {}
+  demo_collector_image: none
+normaliser:
+  version: n2
+  source_sha256: 2ccacce98708cbadea6eeebf6707032cd633932e8efa02105c709a295d17ea56
+  rules:
+  - 'logs: drop log records of instrumentation scope rum.rr-web'
+  - 'logs: delete a log record attribute whose AnyValue is empty'
+  - 'logs: a missing or empty log body becomes stringValue ""'
+  - 'all: drop every resource whose service.name is flagd or flagd-ui, with its records'
+  - 'traces: drop span events whose name contains feature_flag'
+  - 'metrics: drop metrics whose name contains feature_flag, with their points'
+  - 'all: delete attributes whose key contains feature_flag, on resources, scopes, spans, span events, span links, log records,
+    data points and exemplars'
+normaliser_dropped:
+  rr_web_records: 0
+  empty_attr_deleted: 0
+  empty_body_set: 0
+  flag_service_records: 0
+  flag_events: 0
+  flag_metric_points: 0
+  flag_attrs: 0
+rotate_bytes: 1048576
+scenario_sha256: 95a389da5ee626caf1c0d1ddcfc3f8753d7fa1cf45718f365dc540e1a6327114
+schedule_sha256: 86dfee0856ffb1162567804cdc2199a7d4f324aa489c515405e2b019729ba98b
+totals:
+  traces:
+    segments: 2
+    frames: 288
+    records: 48876
+    bytes: 1789760
+  logs:
+    segments: 1
+    frames: 288
+    records: 2947
+    bytes: 199222
+  metrics:
+    segments: 1
+    frames: 289
+    records: 60568
+    bytes: 548799

@@ -1,0 +1,58 @@
+# Default-deny egress, then: DNS for every pod; generators to the collector, and to any address on 443 for the
+# init container's git fetch and Go module download (plain NetworkPolicy has no FQDN rules); the collector to the
+# gateway in namespace otb only.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress
+  namespace: otb-bg
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: otb-bg
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: kube-system } }
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: generators
+  namespace: otb-bg
+spec:
+  podSelector:
+    matchExpressions:
+      - { key: app.kubernetes.io/name, operator: In, values: [otb-bg-loggen, otb-bg-loadgen] }
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector: { matchLabels: { app.kubernetes.io/name: otb-bg-collector } }
+      ports:
+        - { protocol: TCP, port: 4318 }
+    - ports:
+        - { protocol: TCP, port: 443 }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: collector
+  namespace: otb-bg
+spec:
+  podSelector: { matchLabels: { app.kubernetes.io/name: otb-bg-collector } }
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: otb } }
+      ports:
+        - { protocol: TCP, port: 4318 }

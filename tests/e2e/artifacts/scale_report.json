@@ -1,0 +1,73 @@
+{
+ "scenario_gb": 1054.9,
+ "peak_mb_s": 4.61,
+ "gateway_headroom": [
+  "27.6x",
+  "measured"
+ ],
+ "gateway_rows_capacity_with_host": [
+  [
+   true,
+   12
+  ],
+  [
+   true,
+   12
+  ],
+  [
+   true,
+   12
+  ]
+ ],
+ "feeders": [
+  [
+   "a",
+   false,
+   true
+  ],
+  [
+   "b",
+   false,
+   true
+  ]
+ ],
+ "replay_headroom_basis": "extrapolated",
+ "ref_measure_parallel_and_host": [
+  [
+   2,
+   true
+  ]
+ ],
+ "archive_on_disk": [
+  "69.6 GB",
+  "extrapolated"
+ ],
+ "reference_on_disk": [
+  "48.8 GB",
+  "extrapolated"
+ ],
+ "stack_a_on_disk": [
+  "3164.8 GB",
+  "extrapolated"
+ ],
+ "stack_b_on_disk": [
+  "-",
+  "not measured"
+ ],
+ "follow_headroom": "not measured",
+ "notes": [
+  "no gateway report under derived/gateway: the corpus was not captured by otb capture"
+ ],
+ "md_has_gateway_row": true,
+ "stdout_is_md": true,
+ "ref_rows": [
+  [
+   "Reference build time, 2 workers",
+   "extrapolated"
+  ],
+  [
+   "Reference build time, 8 workers",
+   "extrapolated"
+  ]
+ ]
+}

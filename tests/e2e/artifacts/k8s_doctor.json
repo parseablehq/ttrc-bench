@@ -1,0 +1,23 @@
+{
+ "good": [],
+ "refused": {
+  "burstable": [
+   "kind: k1-alpha/k1-store: Deployment/k1-store: not Guaranteed (requests must equal limits for cpu and memory): ['store']",
+   "kind: no backend pods for ['k1-alpha']"
+  ],
+  "nodigest": [
+   "kind: k1-alpha/k1-store: Deployment/k1-store: container store: image 'fx/store:1.0.0' is not pinned by digest"
+  ],
+  "unequal": [
+   "kind: unequal backend budgets: k1-alpha=2.0 CPU/2.00 GiB, k2-beta=1.0 CPU/1.00 GiB"
+  ],
+  "unlabelled": [
+   "kind: k1-alpha/k1-store: Deployment/k1-store: labels otb.stack/otb.role missing or invalid",
+   "kind: no backend pods for ['k1-alpha']"
+  ],
+  "background": [
+   "otb-bg: Deployment/otb-bg-loggen: container build: image 'golang:1.22' is not pinned by digest",
+   "otb-bg: Deployment/otb-bg-loggen: not Guaranteed (requests must equal limits for cpu and memory): ['loggen', 'build']"
+  ]
+ }
+}

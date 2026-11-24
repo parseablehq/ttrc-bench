@@ -1,0 +1,38 @@
+# B3 ClickHouse with the contrib exporter's schema. Paths are relative to the repo root (--project-directory).
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.8.15.10@sha256:9716a352d25f538bd19d868b001141e7a60e4d035bc9b823658c6a071660aa61
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ${B3_CH_ADMIN_PASSWORD}
+      CLICKHOUSE_DB: otel
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+      B3_MAX_QUERY_MEMORY: ${B3_MAX_QUERY_MEMORY}
+      B3_SPILL_BYTES: ${B3_SPILL_BYTES}
+    volumes:
+      - b3-data:/var/lib/clickhouse
+      - ./stacks/b3-clickhouse/config/memory.xml:/etc/clickhouse-server/config.d/otb-memory.xml:ro
+      - ./stacks/b3-clickhouse/config/profiles.xml:/etc/clickhouse-server/users.d/otb-profiles.xml:ro
+    ulimits:
+      nofile: {soft: 262144, hard: 262144}
+    ports: ["127.0.0.1:33123:8123"]
+    cpus: ${B3_CLICKHOUSE_CPUS}
+    mem_limit: ${B3_CLICKHOUSE_MEM}
+    labels: {otb.stack: b3-clickhouse, otb.role: backend}
+    restart: unless-stopped
+
+  ingest-b3:
+    image: otel/opentelemetry-collector-contrib:0.161.0@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1
+    command: ["--config=/etc/otelcol/config.yaml"]
+    environment:
+      B3_CH_ADMIN_PASSWORD: ${B3_CH_ADMIN_PASSWORD}
+    volumes: ["./stacks/b3-clickhouse/collector.yaml:/etc/otelcol/config.yaml:ro"]
+    ports: ["127.0.0.1:4383:4318", "127.0.0.1:13383:13133", "127.0.0.1:18883:8888"]
+    cpus: ${INGEST_CPUS}
+    mem_limit: ${INGEST_MEM}
+    labels: {otb.stack: b3-clickhouse, otb.role: ingest}
+    depends_on: [clickhouse]
+    restart: unless-stopped
+
+volumes:
+  b3-data:

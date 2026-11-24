@@ -1,0 +1,82 @@
+# The build's module cache, build cache and the binary for the pinned commit live on this claim, so a pod that
+# restarts or a redeploy after `otb capture` removed the generators does not fetch and build again. The claim
+# stays when the capture removes the rest (otb/background.py). One pod at a time (Recreate), so ReadWriteOnce.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: otb-bg-loggen-cache
+  namespace: otb-bg
+  labels: { app.kubernetes.io/name: otb-bg-loggen }
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests: { storage: 4Gi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otb-bg-loggen
+  namespace: otb-bg
+  labels: { app.kubernetes.io/name: otb-bg-loggen, otb.role: background }
+spec:
+  replicas: 1
+  strategy: { type: Recreate }
+  # the build runs in the pod's init container; a slow link puts it past the default 600 s deadline
+  progressDeadlineSeconds: 1800
+  selector:
+    matchLabels: { app.kubernetes.io/name: otb-bg-loggen }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: otb-bg-loggen, otb.role: background }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        # a fresh cloud disk is root-owned; the cache claim must be the build user's group to write
+        fsGroup: 65532
+        seccompProfile: { type: RuntimeDefault }
+      initContainers:
+        - name: build
+          image: golang:1.22.12-bookworm@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdece2955af1c23b37ae5d55a253
+          command: [sh, /build/build.sh]
+          envFrom:
+            - configMapRef: { name: otb-bg-source }
+          env:
+            - { name: OTB_BG_GENERATOR, value: otel-loggen }
+            - name: GH_TOKEN
+              valueFrom: { secretKeyRef: { name: otb-bg-github, key: token, optional: true } }
+          resources:
+            requests: { cpu: "1", memory: 1Gi }
+            limits: { cpu: "1", memory: 1Gi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          volumeMounts:
+            - { name: build, mountPath: /build, readOnly: true }
+            - { name: work, mountPath: /work }
+            - { name: shared, mountPath: /shared }
+      containers:
+        - name: loggen
+          image: gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
+          command: [/shared/generator]
+          envFrom:
+            - configMapRef: { name: otb-bg-loggen }
+          resources:
+            requests: { cpu: 500m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          volumeMounts:
+            - { name: shared, mountPath: /shared, readOnly: true }
+      volumes:
+        - name: build
+          configMap: { name: otb-bg-build }
+        - name: work
+          persistentVolumeClaim: { claimName: otb-bg-loggen-cache }
+        - name: shared
+          emptyDir: { sizeLimit: 64Mi }

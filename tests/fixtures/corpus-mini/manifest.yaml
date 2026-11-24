@@ -1,0 +1,67 @@
+format: otb-archive/1
+name: corpus-mini
+corpus_id: 20fda53903afd4084ec6cb47d4446f681f27bd0b68aed4cb47eff7de446b3a5b
+sealed: true
+created_utc: '2026-10-02T02:55:52Z'
+window:
+  start: 1790237340000000000
+  end: 1790237760000000000
+instances:
+- default
+streams:
+- g0
+source:
+  demo_repo: https://github.com/open-telemetry/opentelemetry-demo
+  demo_commit: unknown (v2 recorded the tag only)
+  demo_tag: 3.1.0
+  service_images:
+    _all: ghcr.io/open-telemetry/demo:3.0.0-<service> (v2 recorded the tag only, no digests)
+  demo_collector_image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+normaliser:
+  version: n2
+  source_sha256: 2ccacce98708cbadea6eeebf6707032cd633932e8efa02105c709a295d17ea56
+  rules:
+  - 'logs: drop log records of instrumentation scope rum.rr-web'
+  - 'logs: delete a log record attribute whose AnyValue is empty'
+  - 'logs: a missing or empty log body becomes stringValue ""'
+  - 'all: drop every resource whose service.name is flagd or flagd-ui, with its records'
+  - 'traces: drop span events whose name contains feature_flag'
+  - 'metrics: drop metrics whose name contains feature_flag, with their points'
+  - 'all: delete attributes whose key contains feature_flag, on resources, scopes, spans, span events, span links, log records,
+    data points and exemplars'
+normaliser_dropped:
+  rr_web_records: 0
+  empty_attr_deleted: 0
+  empty_body_set: 1
+  flag_service_records: 2086
+  flag_events: 1354
+  flag_metric_points: 18
+  flag_attrs: 223
+rotate_bytes: 1048576
+scenario_sha256: 6b13af0d0ede78c5245a31289d0b1be124939d434c13e4a7fd49a2d88fecce47
+schedule_sha256: afef529224fbbd75a2e2dd3ef1fc394fe2c8e98b5d3300ea375d534ec00c7959
+totals:
+  traces:
+    segments: 2
+    frames: 90
+    records: 24323
+    bytes: 1859965
+  logs:
+    segments: 1
+    frames: 89
+    records: 8394
+    bytes: 839492
+  metrics:
+    segments: 1
+    frames: 53
+    records: 40712
+    bytes: 711179
+imported_from:
+  v2_corpus_yaml: .otb/f1/mini-raw/corpus.yaml
+  v2_sha256:
+    traces: e7b0cb6680ce9f847e007d1885768797241428ceaf752cac68203bef93d7aace
+    logs: a7b464073fe86caf158c7a70c4ce51539c663dd57ce66d915c1b2f9201fc9de9
+    metrics: ca4bab844cc891aaf1813ea36a985e56bb7fdb2df90d3ff6e3488c0ae0679516
+  v2_window_utc:
+  - '2026-09-24T08:13:00'
+  - '2026-09-24T08:16:00'

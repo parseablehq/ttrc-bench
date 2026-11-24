@@ -1,0 +1,19 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+exporters:
+  otlphttp:
+    endpoint: http://store:9200
+    sending_queue: {enabled: false}
+    retry_on_failure: {enabled: true, max_elapsed_time: 20s}
+service:
+  extensions: [health_check]
+  pipelines:
+    traces: {receivers: [otlp], exporters: [otlphttp]}
+    logs: {receivers: [otlp], exporters: [otlphttp]}
+    metrics: {receivers: [otlp], exporters: [otlphttp]}

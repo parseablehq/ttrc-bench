@@ -1,0 +1,37 @@
+# What the runner pod's install init container puts on the PVC, pinned by version and sha256 per architecture
+# (deploy/k8s/runner/install.sh reads these through the otb-runner-install ConfigMap that generate.py writes).
+# Claude Code is the npm registry's native package for linux, which holds one static binary; the version is the
+# one run configs pin as agent.cli_version, and install.sh fails when the binary reports another.
+uv:
+  version: 0.13.0
+  url: https://github.com/astral-sh/uv/releases/download/{version}/uv-{uv_arch}-unknown-linux-gnu.tar.gz
+  sha256:
+    arm64: 3ccfb6af6e242433eb552f7d9676abd5412c6595c497e990d9c8cb7b5bd4d2c3
+    amd64: 1468ebd5a5541121837c5a2817b9972ba6090fa6caa3d142620850a47fb75154
+kubectl:
+  version: v1.37.0
+  url: https://dl.k8s.io/release/{version}/bin/linux/{arch}/kubectl
+  sha256:
+    arm64: 922df28df248cc00a9e025f947704f1d1482de64ece54cfe57e61f19eaf1eef3
+    amd64: 6129359f4e1f3848a5572ccb0b26cf28b8ca08cef38c95a765b2f64a2c961a2f
+helm:
+  version: v4.3.0
+  url: https://get.helm.sh/helm-{version}-linux-{arch}.tar.gz
+  sha256:
+    arm64: 31c5794dd55c66a51e6b7d2e2ac7a114ae8b1de41ff1d9ba51748ac973b06a08
+    amd64: 86584a54def73570558f66f5111cc53dfed56689637ae32c1201205d494f54fb
+claude:
+  version: 2.1.295
+  url: https://registry.npmjs.org/@anthropic-ai/claude-code-linux-{claude_arch}/-/claude-code-linux-{claude_arch}-{version}.tgz
+  sha256:
+    arm64: 931e64de4906046d2fc4d5a3c2daa9a27dc6397525c25f136cb8348749abcb51
+    amd64: d45a2fa14a7ea0b8ab4f56e502de5893c2b816078c71c4d8ab2e4142148f3d95
+python:
+  # uv installs these from its own manifest (sha256-checked by uv); install.sh records the versions it resolved
+  # and fails when they differ from these, so a uv upgrade cannot move the interpreter silently.
+  versions: {"3.12": 3.12.15, "3.13": 3.13.16}
+images:
+  # multi-arch index digests, `docker buildx imagetools inspect <tag>`; also listed in deploy/k8s/charts.lock.yaml
+  runner: node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+  agent: python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258
+  tools: node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392

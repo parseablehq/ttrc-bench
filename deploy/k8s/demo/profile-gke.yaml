@@ -1,0 +1,51 @@
+# Resources for one demo instance on GKE, sized for 25 Locust users. Every container's requests equal its limits, so
+# every pod is Guaranteed. Memory limits are the Compose capture's (compose.yaml, the TTRC-Bench overlay's 1 GiB collector,
+# compose.gke.yaml's 768M flagd-ui), so a memory fault (emailMemoryLeak, recommendationCacheFailure) reaches the same
+# OOM limit in both runtimes. The exceptions are checkout and product-catalog at 64Mi: at Compose's 20Mi each spun its
+# whole CPU limit and timed out requests on kind (profile-kind.yaml), and no memory fault targets either. Compose sets
+# no CPU limit; these sum to 4.1 cores (and 5.3 GiB of memory) against the ~3.5 cores measured at 25 users.
+global:
+  otb:
+    queueSize: 10Gi
+
+components:
+  ad:              { resources: { requests: { cpu: 250m, memory: 300Mi },  limits: { cpu: 250m, memory: 300Mi } } }
+  astronomy-db:    { resources: { requests: { cpu: 100m, memory: 80Mi },   limits: { cpu: 100m, memory: 80Mi } } }
+  cart:            { resources: { requests: { cpu: 200m, memory: 160Mi },  limits: { cpu: 200m, memory: 160Mi } } }
+  checkout:        { resources: { requests: { cpu: 100m, memory: 64Mi },   limits: { cpu: 100m, memory: 64Mi } } }
+  currency:        { resources: { requests: { cpu: 100m, memory: 20Mi },   limits: { cpu: 100m, memory: 20Mi } } }
+  email:           { resources: { requests: { cpu: 100m, memory: 100Mi },  limits: { cpu: 100m, memory: 100Mi } } }
+  frontend:        { resources: { requests: { cpu: 500m, memory: 250Mi },  limits: { cpu: 500m, memory: 250Mi } } }
+  frontend-proxy:  { resources: { requests: { cpu: 300m, memory: 90Mi },   limits: { cpu: 300m, memory: 90Mi } } }
+  image-provider:  { resources: { requests: { cpu: 50m, memory: 120Mi },   limits: { cpu: 50m, memory: 120Mi } } }
+  load-generator:  { resources: { requests: { cpu: 1000m, memory: 1500Mi }, limits: { cpu: 1000m, memory: 1500Mi } } }
+  payment:         { resources: { requests: { cpu: 150m, memory: 140Mi },  limits: { cpu: 150m, memory: 140Mi } } }
+  product-catalog: { resources: { requests: { cpu: 100m, memory: 64Mi },   limits: { cpu: 100m, memory: 64Mi } } }
+  quote:           { resources: { requests: { cpu: 100m, memory: 40Mi },   limits: { cpu: 100m, memory: 40Mi } } }
+  recommendation:  { resources: { requests: { cpu: 200m, memory: 500Mi },  limits: { cpu: 200m, memory: 500Mi } } }
+  shipping:        { resources: { requests: { cpu: 50m, memory: 20Mi },    limits: { cpu: 50m, memory: 20Mi } } }
+  telemetry-docs:  { resources: { requests: { cpu: 50m, memory: 100Mi },   limits: { cpu: 50m, memory: 100Mi } } }
+  valkey-cart:     { resources: { requests: { cpu: 50m, memory: 20Mi },    limits: { cpu: 50m, memory: 20Mi } } }
+  flagd:
+    resources: { requests: { cpu: 100m, memory: 75Mi }, limits: { cpu: 100m, memory: 75Mi } }
+    sidecarContainers:
+      - name: flagd-ui
+        useDefault: { env: false }
+        imageOverride: { tag: "latest-flagd-ui@sha256:a4386d67549e5124369c44d08d056be8aba38003203c4fe6fa9519d1b4e33bbc" }
+        service: { port: 4000 }
+        env:
+          - { name: FLAGD_UI_PORT, value: "4000" }
+          - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "http://otel-collector:4318" }
+          - { name: OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION, value: "explicit_bucket_histogram" }
+          - { name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE, value: "cumulative" }
+          - { name: OTEL_RESOURCE_ATTRIBUTES, value: "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low" }
+          - { name: OTEL_SERVICE_NAME, value: "flagd-ui" }
+          - { name: PHX_HOST, value: "localhost" }
+          - { name: SECRET_KEY_BASE, value: "yYrECL4qbNwleYInGJYvVnSkwJuSQJ4ijPTx5tirGUXrbznFIBFVJdPl5t6O9ASw" }
+        # The Erlang VM starts one scheduler per node core, so a large node needs more than the laptop's 200M.
+        resources: { requests: { cpu: 100m, memory: 768Mi }, limits: { cpu: 100m, memory: 768Mi } }
+        volumeMounts:
+          - { name: config-rw, mountPath: /app/data }
+
+opentelemetry-collector:
+  resources: { requests: { cpu: 500m, memory: 1Gi }, limits: { cpu: 500m, memory: 1Gi } }

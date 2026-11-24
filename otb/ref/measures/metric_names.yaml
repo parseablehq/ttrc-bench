@@ -1,0 +1,7 @@
+description: Distinct metric names (OTel form) with a data point in the window.
+params:
+  window: window
+columns:
+- metric
+exact_on:
+- metrics.names

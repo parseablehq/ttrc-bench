@@ -1,0 +1,14 @@
+description: Error evidence of one service in the window, grouped by text. Error spans count by status message,
+  log records at WARN or above count by body. The symptom measure for error-injection faults.
+params:
+  window: window
+  service: str
+  region: str?
+columns:
+- signature
+- spans
+- logs
+- n
+- first_ns
+- last_ns
+exact_on: []

@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: {name: store, namespace: otb-k2}
+spec:
+  replicas: 1
+  template:
+    metadata: {labels: {otb.stack: k2-beta, otb.role: backend}}
+    spec:
+      containers:
+        - name: store
+          image: fx/store:1.0.0@sha256:2222222222222222222222222222222222222222222222222222222222222222
+          resources: {requests: {cpu: "4", memory: 8Gi}, limits: {cpu: "4", memory: 8Gi}}

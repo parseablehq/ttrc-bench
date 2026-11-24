@@ -1,0 +1,56 @@
+{
+ "crashes": [
+  {
+   "after_acks": 41,
+   "open_tails": {
+    "bytes_past_last_index": 0,
+    "torn_index_lines": 0
+   },
+   "replay_statuses": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "replayed_acked": 4,
+   "replayed_from_sealed_segment": true
+  },
+  {
+   "after_acks": 111,
+   "open_tails": {
+    "bytes_past_last_index": 0,
+    "torn_index_lines": 0
+   },
+   "replay_statuses": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "replayed_acked": 4,
+   "replayed_from_sealed_segment": true
+  },
+  {
+   "after_acks": 181,
+   "open_tails": {
+    "bytes_past_last_index": 25640,
+    "torn_index_lines": 0
+   },
+   "replay_statuses": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "replayed_acked": 4,
+   "replayed_from_sealed_segment": true
+  }
+ ],
+ "dedupe_hits_per_run": [
+  0,
+  4,
+  5,
+  4
+ ],
+ "resent_unacked": 6
+}

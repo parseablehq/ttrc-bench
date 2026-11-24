@@ -1,0 +1,89 @@
+# The fixture MCP server (tests/fixtures/mcp_fixture_server.py) as a Deployment in otb-fx, standing in for a
+# backend's MCP endpoint in the kind test. A public python image by digest; the SDK is pip-installed at start
+# from fixture-requirements.txt with --require-hashes, so every wheel is pinned. The script and the requirements
+# come from the otb-fx-fixture ConfigMap that generate.py writes.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: otb-fx
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fixture-mcp
+  namespace: otb-fx
+  labels: {app: fixture-mcp}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: fixture-mcp}
+  template:
+    metadata:
+      labels: {app: fixture-mcp}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: install
+          image: python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258
+          command: [pip, install, --quiet, --no-cache-dir, --require-hashes, --target, /site, -r, /fixture/requirements.txt]
+          env:
+            - {name: HOME, value: /tmp}
+            - {name: TMPDIR, value: /tmp}
+          securityContext: &restricted
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+            readOnlyRootFilesystem: true
+          resources:
+            requests: {cpu: 200m, memory: 256Mi}
+            limits: {cpu: 200m, memory: 256Mi}
+          volumeMounts:
+            - {name: site, mountPath: /site}
+            - {name: fixture, mountPath: /fixture, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      containers:
+        - name: fixture-mcp
+          image: python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258
+          command: [python, /fixture/mcp_fixture_server.py, --http, "8765"]
+          env:
+            - {name: PYTHONPATH, value: /site}
+            # The server binds 127.0.0.1 unless told otherwise.
+            - {name: FIXTURE_HTTP_HOST, value: 0.0.0.0}
+            - {name: HOME, value: /tmp}
+            - {name: TMPDIR, value: /tmp}
+          ports:
+            - {name: mcp, containerPort: 8765, protocol: TCP}
+          securityContext: *restricted
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 100m, memory: 128Mi}
+          volumeMounts:
+            - {name: site, mountPath: /site, readOnly: true}
+            - {name: fixture, mountPath: /fixture, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - {name: site, emptyDir: {}}
+        - {name: tmp, emptyDir: {}}
+        - name: fixture
+          configMap: {name: otb-fx-fixture}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fixture-mcp
+  namespace: otb-fx
+  labels: {app: fixture-mcp}
+spec:
+  type: ClusterIP
+  selector: {app: fixture-mcp}
+  ports:
+    - {name: mcp, port: 8765, targetPort: 8765, protocol: TCP}

@@ -1,0 +1,76 @@
+format: otb-archive/1
+name: gke-30b
+corpus_id: 516736c673f4e3814687f90a1397f08e38bf14c0a3393f86ecc7d4984f402078
+sealed: true
+created_utc: '2026-10-10T08:11:24Z'
+window:
+  start: 1791618000000000000
+  end: 1791619920000000000
+instances:
+- local
+streams:
+- g0
+source:
+  demo_repo: https://github.com/open-telemetry/opentelemetry-demo
+  demo_commit: dedc017
+  demo_tag: 3.1.0
+  service_images:
+    ad: ghcr.io/open-telemetry/demo@sha256:a627c85d919c28fe6279534c1c7bcc04941e0a981cca53f0ef8f59fa28a7fa59
+    astronomy-db: postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636
+    cart: ghcr.io/open-telemetry/demo@sha256:1f74a6f951f2fc819e8936b3ca52ecb725ddd2043e808e1075c02b197869b08b
+    checkout: ghcr.io/open-telemetry/demo@sha256:6803df8c2a128bde1e4188d1f3234ef6b27e47d08b06ba0c28a073a9be0a4856
+    currency: ghcr.io/open-telemetry/demo@sha256:a1542f8f40f5c6eeacb85f2f5e91ed43f71bf26670d575e137fd3a6e705fc2f7
+    email: ghcr.io/open-telemetry/demo@sha256:a882adabf4a5bf2e3108909f41e030aa4fad0684647eaee1754d3243ca9dce37
+    flagd: ghcr.io/open-feature/flagd@sha256:32234e63c1d0634883aabd31cbd46802934aaaef0153dfd653b5d1017940bb4e
+    flagd-ui: ghcr.io/open-telemetry/demo@sha256:a4386d67549e5124369c44d08d056be8aba38003203c4fe6fa9519d1b4e33bbc
+    frontend: ghcr.io/open-telemetry/demo@sha256:e75ad3c5c75c2b1cf83e495502eedc62a091ea5bea58503afdb8c7eaa9710c90
+    frontend-proxy: ghcr.io/open-telemetry/demo@sha256:89f6ae9f3d39b179087dacd28d2e1a0dae3f231f858c3c7214b8fae9dc98d1dd
+    image-provider: ghcr.io/open-telemetry/demo@sha256:8b78adc52028f867baaae4d2f0cf5466a79b2a31f93a01fc2e2d7d9ee246a814
+    load-generator: ghcr.io/open-telemetry/demo@sha256:8ad98c2b008522fe34dcf0b421ff4906fecad296613786c6421e019004673ccc
+    payment: ghcr.io/open-telemetry/demo@sha256:7552e1fe559e4d740bd2ffae5fb63b5db51be2a3d2e1db9f08553c10bd001024
+    product-catalog: ghcr.io/open-telemetry/demo@sha256:9a7398db29925d33daafa454685110f5217514adfe0930da8eea1fd16221d860
+    quote: ghcr.io/open-telemetry/demo@sha256:0e82843cf7edf7e9d00faac5fcda6202ef21e0f23aa6f95076738a6d1fb0ebc8
+    recommendation: ghcr.io/open-telemetry/demo@sha256:c383035e0b3e7e077be8e8ed3470cdd94490f081deb45b17af0bac3124d26090
+    shipping: ghcr.io/open-telemetry/demo@sha256:2aad4d6786a651519eeaf0f46cb97b9f8d6f6125c176bd0d8ce4ffd463dab7f7
+    telemetry-docs: ghcr.io/open-telemetry/demo@sha256:47b84fb723a4e811f2a0c0d81049ef96c3591a35cef70811c40c8ba1ea028f23
+    valkey-cart: ghcr.io/valkey-io/valkey@sha256:107b203169a20ef7c87548c157f4e4a833dbbbd20fefd3a26740b7f98ac80216
+  demo_collector_image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+normaliser:
+  version: n2
+  source_sha256: 2ccacce98708cbadea6eeebf6707032cd633932e8efa02105c709a295d17ea56
+  rules:
+  - 'logs: drop log records of instrumentation scope rum.rr-web'
+  - 'logs: delete a log record attribute whose AnyValue is empty'
+  - 'logs: a missing or empty log body becomes stringValue ""'
+  - 'all: drop every resource whose service.name is flagd or flagd-ui, with its records'
+  - 'traces: drop span events whose name contains feature_flag'
+  - 'metrics: drop metrics whose name contains feature_flag, with their points'
+  - 'all: delete attributes whose key contains feature_flag, on resources, scopes, spans, span events, span links, log records,
+    data points and exemplars'
+normaliser_dropped:
+  rr_web_records: 0
+  empty_attr_deleted: 0
+  empty_body_set: 19
+  flag_service_records: 29730
+  flag_events: 10324
+  flag_metric_points: 180
+  flag_attrs: 1649
+rotate_bytes: 67108864
+scenario_sha256: 764c304017ccdbb4f200dd4891a68f8a8f69f0c75159547a3255d31740620b03
+schedule_sha256: fbb96c53082bdbcf27ee51ff4921c360093360f30625cada912c981ee01e2e64
+totals:
+  traces:
+    segments: 4
+    frames: 879
+    records: 185064
+    bytes: 14523339
+  logs:
+    segments: 4
+    frames: 873
+    records: 62365
+    bytes: 6593317
+  metrics:
+    segments: 4
+    frames: 414
+    records: 233047
+    bytes: 4961403

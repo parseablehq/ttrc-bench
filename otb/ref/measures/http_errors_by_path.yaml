@@ -1,0 +1,15 @@
+description: Spans of a service and kind (default SERVER) starting in the window with HTTP status >= min_status
+  (default 500), grouped by URL path without the query string, most frequent first.
+params:
+  window: window
+  service: str
+  kind:
+    type: str
+    default: SERVER
+  min_status:
+    type: int
+    default: 500
+columns:
+- url_path
+- n
+exact_on: []

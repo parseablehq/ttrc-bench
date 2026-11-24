@@ -1,0 +1,207 @@
+{
+ "file": {
+  "events": [
+   {
+    "action": "flag.write",
+    "at_ns": 1793311956532040000,
+    "detail": {
+     "flag": "cartFailure",
+     "sha256": "94a2b61c13bf947098c0a0f6e66fc12e7df11bcb282d901780bdfd7f199013b8",
+     "variant": "25%",
+     "via": "file"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311957582886000,
+    "detail": {
+     "confirm_s": "1.050",
+     "flag": "cartFailure",
+     "readback": "25%",
+     "served": "25%",
+     "variant": "25%"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.write",
+    "at_ns": 1793311960525640000,
+    "detail": {
+     "flag": "cartFailure",
+     "sha256": "47d9b79bc7c24edec79bf281b83e26adc8b13447e5c643da8efdd0033718bf6a",
+     "variant": "off",
+     "via": "file"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311961581412000,
+    "detail": {
+     "confirm_s": "1.055",
+     "flag": "cartFailure",
+     "readback": "off",
+     "served": "off",
+     "variant": "off"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   }
+  ],
+  "window_s": 3.998526
+ },
+ "targeted": {
+  "events": [
+   {
+    "action": "flag.write",
+    "at_ns": 1793311962613534000,
+    "detail": {
+     "body": "{}",
+     "flag": "productCatalogFailure",
+     "http": "200",
+     "variant": "on",
+     "via": "flagd-ui"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311962617655000,
+    "detail": {
+     "confirm_s": "0.003",
+     "flag": "productCatalogFailure",
+     "readback": "on",
+     "served": "None",
+     "variant": "on"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.write",
+    "at_ns": 1793311966611324000,
+    "detail": {
+     "body": "{}",
+     "flag": "productCatalogFailure",
+     "http": "200",
+     "variant": "off",
+     "via": "flagd-ui"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311966614059000,
+    "detail": {
+     "confirm_s": "0.002",
+     "flag": "productCatalogFailure",
+     "readback": "off",
+     "served": "None",
+     "variant": "off"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   }
+  ],
+  "window_s": 3.996404
+ },
+ "ui": {
+  "events": [
+   {
+    "action": "flag.write",
+    "at_ns": 1793311951063938000,
+    "detail": {
+     "body": "{}",
+     "flag": "paymentFailure",
+     "http": "200",
+     "variant": "50%",
+     "via": "flagd-ui"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311951501599000,
+    "detail": {
+     "confirm_s": "0.437",
+     "flag": "paymentFailure",
+     "readback": "50%",
+     "served": "50%",
+     "variant": "50%"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "on",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.write",
+    "at_ns": 1793311955065573000,
+    "detail": {
+     "body": "{}",
+     "flag": "paymentFailure",
+     "http": "200",
+     "variant": "off",
+     "via": "flagd-ui"
+    },
+    "final": false,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   },
+   {
+    "action": "flag.confirm",
+    "at_ns": 1793311955503539000,
+    "detail": {
+     "confirm_s": "0.437",
+     "flag": "paymentFailure",
+     "readback": "off",
+     "served": "off",
+     "variant": "off"
+    },
+    "final": true,
+    "instance": "local",
+    "ok": true,
+    "phase": "off",
+    "slot_id": "f1"
+   }
+  ],
+  "window_s": 4.00194
+ }
+}

@@ -1,0 +1,6 @@
+name: fx-mcp
+version: 0.1.0
+binary: fx-mcp
+assets:
+  linux-amd64: {url: "http://127.0.0.1:__PORT__/fx-mcp.tar.gz", sha256: "__ASSET_SHA__"}
+  darwin-arm64: {url: "http://127.0.0.1:__PORT__/fx-mcp.tar.gz", sha256: "__ASSET_SHA__"}

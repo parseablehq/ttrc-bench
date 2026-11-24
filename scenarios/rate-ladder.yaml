@@ -1,0 +1,13 @@
+# Rate ladder, 48 minutes, no faults: one OTel Demo instance at 8, 25, 40 and 60 users for 12 minutes each, to
+# measure MB/min per signal above the laptop's 25-user ceiling (scenarios/rates.yaml) and the stacks' CPU under it.
+id: rate-ladder
+seed: 17
+duration_s: 2880
+instances: [local]
+min_gap_s: 300
+load:
+  - { at_s: 0, users: 8 }
+  - { at_s: 720, users: 25 }
+  - { at_s: 1440, users: 40 }
+  - { at_s: 2160, users: 60 }
+slots: []

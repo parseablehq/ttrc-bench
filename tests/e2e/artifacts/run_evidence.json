@@ -1,0 +1,24 @@
+{
+ "evidence": [
+  "gate/b1-lgtm/counters_start.json",
+  "gate/b1-lgtm/ingest.json",
+  "gate/b1-lgtm/responses.jsonl.zst",
+  "gate/b3-clickhouse/counters_start.json",
+  "gate/b3-clickhouse/ingest.json",
+  "gate/b3-clickhouse/responses.jsonl.zst",
+  "gate/b4-parseable/counters_start.json",
+  "gate/b4-parseable/ingest.json",
+  "gate/b4-parseable/responses.jsonl.zst",
+  "gate/expected.json",
+  "gate/plan.json"
+ ],
+ "shared_inode": true,
+ "links_to_shared_copy": 3,
+ "store_mode": "0o444",
+ "prereg_sha_equals_session_file": true,
+ "gate_rejudge_identical": {
+  "status": "pass"
+ },
+ "changed_session_file_refused": true,
+ "store_blobs_after_change": 10
+}

@@ -1,0 +1,50 @@
+# Resources for one demo instance on a laptop kind cluster, for a few Locust users: 1.73 cores and 3.7 GiB, every
+# pod Guaranteed. Memory limits are the Compose ones except load-generator, recommendation, flagd-ui and the collector,
+# which are cut to fit, and checkout and product-catalog, which are raised: at Compose's 20Mi each of these Go
+# services spun its whole CPU limit (50m, and 2 cores when given 2) and timed out requests from the first minutes;
+# at 64Mi they use about 1m and work set 20 and 27 MiB (multifault-kind.json, `health`). A memory
+# fault does not hit the same OOM limit as on Compose or GKE, so capture memory faults on the gke profile only.
+global:
+  otb:
+    queueSize: 2Gi
+
+components:
+  ad:              { resources: { requests: { cpu: 200m, memory: 300Mi },  limits: { cpu: 200m, memory: 300Mi } } }
+  astronomy-db:    { resources: { requests: { cpu: 50m, memory: 80Mi },    limits: { cpu: 50m, memory: 80Mi } } }
+  cart:            { resources: { requests: { cpu: 100m, memory: 160Mi },  limits: { cpu: 100m, memory: 160Mi } } }
+  checkout:        { resources: { requests: { cpu: 50m, memory: 64Mi },    limits: { cpu: 50m, memory: 64Mi } } }
+  currency:        { resources: { requests: { cpu: 50m, memory: 20Mi },    limits: { cpu: 50m, memory: 20Mi } } }
+  email:           { resources: { requests: { cpu: 50m, memory: 100Mi },   limits: { cpu: 50m, memory: 100Mi } } }
+  frontend:        { resources: { requests: { cpu: 200m, memory: 250Mi },  limits: { cpu: 200m, memory: 250Mi } } }
+  frontend-proxy:  { resources: { requests: { cpu: 100m, memory: 90Mi },   limits: { cpu: 100m, memory: 90Mi } } }
+  image-provider:  { resources: { requests: { cpu: 20m, memory: 120Mi },   limits: { cpu: 20m, memory: 120Mi } } }
+  load-generator:  { resources: { requests: { cpu: 300m, memory: 1Gi },    limits: { cpu: 300m, memory: 1Gi } } }
+  payment:         { resources: { requests: { cpu: 50m, memory: 140Mi },   limits: { cpu: 50m, memory: 140Mi } } }
+  product-catalog: { resources: { requests: { cpu: 50m, memory: 64Mi },    limits: { cpu: 50m, memory: 64Mi } } }
+  quote:           { resources: { requests: { cpu: 50m, memory: 40Mi },    limits: { cpu: 50m, memory: 40Mi } } }
+  recommendation:  { resources: { requests: { cpu: 100m, memory: 300Mi },  limits: { cpu: 100m, memory: 300Mi } } }
+  shipping:        { resources: { requests: { cpu: 20m, memory: 20Mi },    limits: { cpu: 20m, memory: 20Mi } } }
+  telemetry-docs:  { resources: { requests: { cpu: 20m, memory: 100Mi },   limits: { cpu: 20m, memory: 100Mi } } }
+  valkey-cart:     { resources: { requests: { cpu: 20m, memory: 20Mi },    limits: { cpu: 20m, memory: 20Mi } } }
+  flagd:
+    resources: { requests: { cpu: 50m, memory: 75Mi }, limits: { cpu: 50m, memory: 75Mi } }
+    sidecarContainers:
+      - name: flagd-ui
+        useDefault: { env: false }
+        imageOverride: { tag: "latest-flagd-ui@sha256:a4386d67549e5124369c44d08d056be8aba38003203c4fe6fa9519d1b4e33bbc" }
+        service: { port: 4000 }
+        env:
+          - { name: FLAGD_UI_PORT, value: "4000" }
+          - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "http://otel-collector:4318" }
+          - { name: OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION, value: "explicit_bucket_histogram" }
+          - { name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE, value: "cumulative" }
+          - { name: OTEL_RESOURCE_ATTRIBUTES, value: "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low" }
+          - { name: OTEL_SERVICE_NAME, value: "flagd-ui" }
+          - { name: PHX_HOST, value: "localhost" }
+          - { name: SECRET_KEY_BASE, value: "yYrECL4qbNwleYInGJYvVnSkwJuSQJ4ijPTx5tirGUXrbznFIBFVJdPl5t6O9ASw" }
+        resources: { requests: { cpu: 50m, memory: 300Mi }, limits: { cpu: 50m, memory: 300Mi } }
+        volumeMounts:
+          - { name: config-rw, mountPath: /app/data }
+
+opentelemetry-collector:
+  resources: { requests: { cpu: 200m, memory: 512Mi }, limits: { cpu: 200m, memory: 512Mi } }

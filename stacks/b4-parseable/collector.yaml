@@ -1,0 +1,71 @@
+# ingest-b4: synchronous. No sending queue, bounded retry: the receiver's HTTP status is Parseable's answer.
+# Parseable OSS rejects OTLP protobuf, so every exporter sends JSON, one stream per signal. The transform
+# processors work around three Parseable ingest defects (PARSEABLE-INGEST-DEFECTS.md 4, 5, 7) and are disclosed
+# in stack.yaml: integer points are sent as doubles, exemplars are dropped, and a log record without
+# timeUnixNano takes its observedTimeUnixNano.
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  basicauth/parseable:
+    client_auth:
+      username: ${env:B4_PARSEABLE_USERNAME}
+      password: ${env:B4_PARSEABLE_PASSWORD}
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+        max_request_body_size: 134217728
+
+processors:
+  transform/b4_metrics:
+    error_mode: propagate
+    metric_statements:
+      - context: datapoint
+        statements:
+          - set(exemplars, nil)
+          - set(value_double, Double(value_int)) where value_double == 0.0
+  transform/b4_logs:
+    error_mode: propagate
+    log_statements:
+      - context: log
+        statements:
+          - set(time_unix_nano, observed_time_unix_nano) where time_unix_nano == 0
+
+exporters:
+  otlphttp/traces:
+    endpoint: http://parseable:8000
+    encoding: json
+    auth: {authenticator: basicauth/parseable}
+    headers: {X-P-Stream: otel_traces}
+    timeout: 60s
+    sending_queue: {enabled: false}
+    retry_on_failure: {enabled: true, initial_interval: 1s, max_interval: 5s, max_elapsed_time: 20s}
+  otlphttp/logs:
+    endpoint: http://parseable:8000
+    encoding: json
+    auth: {authenticator: basicauth/parseable}
+    headers: {X-P-Stream: otel_logs}
+    timeout: 60s
+    sending_queue: {enabled: false}
+    retry_on_failure: {enabled: true, initial_interval: 1s, max_interval: 5s, max_elapsed_time: 20s}
+  otlphttp/metrics:
+    endpoint: http://parseable:8000
+    encoding: json
+    auth: {authenticator: basicauth/parseable}
+    headers: {X-P-Stream: otel_metrics}
+    timeout: 60s
+    sending_queue: {enabled: false}
+    retry_on_failure: {enabled: true, initial_interval: 1s, max_interval: 5s, max_elapsed_time: 20s}
+
+service:
+  extensions: [health_check, basicauth/parseable]
+  telemetry:
+    metrics:
+      readers:
+        - pull: {exporter: {prometheus: {host: 0.0.0.0, port: 8888}}}
+  pipelines:
+    traces: {receivers: [otlp], exporters: [otlphttp/traces]}
+    logs: {receivers: [otlp], processors: [transform/b4_logs], exporters: [otlphttp/logs]}
+    metrics: {receivers: [otlp], processors: [transform/b4_metrics], exporters: [otlphttp/metrics]}

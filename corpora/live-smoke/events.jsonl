@@ -1,0 +1,7 @@
+{"at_ns":1790933412347232000,"slot_id":"load0","instance":"local","action":"load.set","phase":"on","ok":false,"final":true,"detail":{"http":"503","users":"5","via":"locust /swarm"}}
+{"at_ns":1790933643428832000,"slot_id":"f1","instance":"local","action":"flag.write","phase":"on","ok":true,"final":false,"detail":{"http":"200","via":"flagd-ui","body":"{}","flag":"cartFailure","variant":"50%"}}
+{"at_ns":1790933643924817000,"slot_id":"f1","instance":"local","action":"flag.confirm","phase":"on","ok":true,"final":true,"detail":{"flag":"cartFailure","variant":"50%","readback":"50%","served":"50%","confirm_s":"0.495"}}
+{"at_ns":1790933873390071000,"slot_id":"f1","instance":"local","action":"flag.write","phase":"off","ok":true,"final":false,"detail":{"http":"200","via":"flagd-ui","body":"{}","flag":"cartFailure","variant":"off"}}
+{"at_ns":1790933873988650000,"slot_id":"f1","instance":"local","action":"flag.confirm","phase":"off","ok":true,"final":true,"detail":{"flag":"cartFailure","variant":"off","readback":"off","served":"off","confirm_s":"0.598"}}
+{"at_ns":1790934043387387000,"slot_id":"d1","instance":"local","action":"decoy.load_step","phase":"on","ok":true,"final":true,"detail":{"http":"200","users":"10","via":"locust /swarm"}}
+{"at_ns":1790934163376233000,"slot_id":"d1","instance":"local","action":"decoy.load_step","phase":"off","ok":true,"final":true,"detail":{"http":"200","users":"5","via":"locust /swarm"}}

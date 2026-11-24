@@ -1,0 +1,61 @@
+{
+ "namespaces": [
+  "otb-bg"
+ ],
+ "kinds": [
+  "ConfigMap/otb-bg-build",
+  "ConfigMap/otb-bg-collector",
+  "ConfigMap/otb-bg-loadgen",
+  "ConfigMap/otb-bg-loggen",
+  "ConfigMap/otb-bg-source",
+  "Deployment/otb-bg-collector",
+  "Deployment/otb-bg-loadgen",
+  "Deployment/otb-bg-loggen",
+  "Namespace/otb-bg",
+  "NetworkPolicy/allow-dns",
+  "NetworkPolicy/collector",
+  "NetworkPolicy/default-deny-egress",
+  "NetworkPolicy/generators",
+  "PersistentVolumeClaim/otb-bg-loadgen-cache",
+  "PersistentVolumeClaim/otb-bg-loggen-cache",
+  "Service/otb-bg-collector"
+ ],
+ "pod_problems": [],
+ "source_repo": "https://github.com/parseablehq/otel-benchmark.git",
+ "source_commit_is_sha": true,
+ "profiles": {
+  "loggen": "generic",
+  "loadgen": "generic"
+ },
+ "generator_endpoints": [
+  "http://otb-bg-collector:4318"
+ ],
+ "collector_service_port": [
+  4318,
+  8888
+ ],
+ "pipelines": {
+  "logs": {
+   "stamps": [
+    "cloud.region=bg",
+    "service.instance.id=bg"
+   ],
+   "exports": [
+    "json http://otb-gateway.otb.svc.cluster.local:4318"
+   ]
+  },
+  "metrics": {
+   "stamps": [
+    "cloud.region=bg",
+    "service.instance.id=bg"
+   ],
+   "exports": [
+    "json http://otb-gateway.otb.svc.cluster.local:4318"
+   ]
+  }
+ },
+ "mb_per_s_within_2pct": {
+  "logs": true,
+  "metrics": true
+ }
+}

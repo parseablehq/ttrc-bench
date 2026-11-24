@@ -1,0 +1,6 @@
+k1-store:
+  resources: {requests: {cpu: "4", memory: 8Gi}, limits: {cpu: "4", memory: 8Gi}}
+k1-ingest:
+  resources: {requests: {cpu: "1", memory: 1Gi}, limits: {cpu: "1", memory: 1Gi}}
+k2-ingest:
+  resources: {requests: {cpu: "1", memory: 1Gi}, limits: {cpu: "1", memory: 1Gi}}

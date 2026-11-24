@@ -1,0 +1,43 @@
+# B4 Parseable OSS, local-store on named volumes. Paths are relative to the repo root (--project-directory).
+services:
+  parseable:
+    image: quay.io/parseablehq/parseable:v3.2.6@sha256:43e07b06f983e43b50eedce39f49998b6b8202803028cbba9ca7f92550a90596
+    command: ["parseable", "local-store"]
+    environment:
+      P_ADDR: 0.0.0.0:8000
+      P_USERNAME: ${B4_PARSEABLE_USERNAME}
+      P_PASSWORD: ${B4_PARSEABLE_PASSWORD}
+      P_FS_DIR: /parseable/data
+      P_STAGING_DIR: /parseable/staging
+      P_QUERY_MEMORY_LIMIT: ${B4_QUERY_MEMORY_LIMIT}
+      P_ACTIX_NUM_WORKERS: ${B4_WORKERS}
+      P_DATAFUSION_TARGET_PARTITIONS: ${B4_TARGET_PARTITIONS}
+      P_NORMALISE_OTEL_PAYLOAD: "true"
+      P_CHECK_UPDATE: "false"
+      P_SEND_ANONYMOUS_USAGE_DATA: "false"
+    volumes:
+      - b4-data:/parseable/data
+      - b4-staging:/parseable/staging
+    ports: ["127.0.0.1:34800:8000"]
+    cpus: ${B4_PARSEABLE_CPUS}
+    mem_limit: ${B4_PARSEABLE_MEM}
+    labels: {otb.stack: b4-parseable, otb.role: backend}
+    restart: unless-stopped
+
+  ingest-b4:
+    image: otel/opentelemetry-collector-contrib:0.161.0@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1
+    command: ["--config=/etc/otelcol/config.yaml"]
+    environment:
+      B4_PARSEABLE_USERNAME: ${B4_PARSEABLE_USERNAME}
+      B4_PARSEABLE_PASSWORD: ${B4_PARSEABLE_PASSWORD}
+    volumes: ["./stacks/b4-parseable/collector.yaml:/etc/otelcol/config.yaml:ro"]
+    ports: ["127.0.0.1:4384:4318", "127.0.0.1:13384:13133", "127.0.0.1:18884:8888"]
+    cpus: ${INGEST_CPUS}
+    mem_limit: ${INGEST_MEM}
+    labels: {otb.stack: b4-parseable, otb.role: ingest}
+    depends_on: [parseable]
+    restart: unless-stopped
+
+volumes:
+  b4-data:
+  b4-staging:

@@ -1,0 +1,16 @@
+# kind only: the background generators fetch their source from the host's git daemon (bg-source.sh) on port
+# 9418, which the generated otb-bg policies (deploy/k8s/background/networkpolicy.yaml) do not allow; kind's
+# kindnet enforces NetworkPolicy, so this one opens exactly that port for the build init containers.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kind-bg-source
+  namespace: otb-bg
+spec:
+  podSelector:
+    matchExpressions:
+      - { key: app.kubernetes.io/name, operator: In, values: [otb-bg-loggen, otb-bg-loadgen] }
+  policyTypes: [Egress]
+  egress:
+    - ports:
+        - { protocol: TCP, port: 9418 }

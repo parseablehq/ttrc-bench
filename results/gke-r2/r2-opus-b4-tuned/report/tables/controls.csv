@@ -1,0 +1,2 @@
+stack,controls,positives,fpr,fpr_lo,fpr_hi,tpr,tpr_lo,tpr_hi,youden_j,youden_j_lo,youden_j_hi
+b4-parseable,8,7,0.1250,0.0000,0.3750,0.8286,0.5429,1.0000,0.7036,0.3107,1.0000

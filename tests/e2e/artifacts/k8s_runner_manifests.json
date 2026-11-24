@@ -1,0 +1,79 @@
+{
+ "instances": [
+  "eu1",
+  "k1"
+ ],
+ "namespaces": {
+  "otb-b1": "baseline",
+  "otb-b3": "baseline",
+  "otb-b4": "baseline",
+  "otb-bg": "restricted",
+  "otb-fx": "restricted",
+  "otb-demo-eu1": "baseline",
+  "otb-demo-k1": "baseline"
+ },
+ "role_bindings": [
+  "otb",
+  "otb-b1",
+  "otb-b3",
+  "otb-b4",
+  "otb-bg",
+  "otb-demo-eu1",
+  "otb-demo-k1",
+  "otb-fx"
+ ],
+ "network_policies": {
+  "otb": [
+   "allow-dns",
+   "default-deny",
+   "otb-gateway-ingress",
+   "otb-runner-egress"
+  ],
+  "otb-b1": [
+   "allow-dns",
+   "allow-from-runner",
+   "allow-intra-namespace",
+   "allow-setup-to-kube-api",
+   "default-deny"
+  ],
+  "otb-b3": [
+   "allow-dns",
+   "allow-from-runner",
+   "allow-intra-namespace",
+   "allow-setup-to-kube-api",
+   "default-deny"
+  ],
+  "otb-b4": [
+   "allow-dns",
+   "allow-from-runner",
+   "allow-intra-namespace",
+   "allow-setup-to-kube-api",
+   "default-deny"
+  ],
+  "otb-fx": [
+   "allow-dns",
+   "allow-from-runner",
+   "allow-intra-namespace",
+   "allow-pip-to-public",
+   "default-deny"
+  ],
+  "otb-demo-eu1": [
+   "allow-collector-to-kubelet",
+   "allow-dns",
+   "allow-intra-namespace",
+   "allow-runner-to-flagd",
+   "allow-runner-to-load-generator",
+   "allow-to-otb-gateway",
+   "default-deny"
+  ],
+  "otb-demo-k1": [
+   "allow-collector-to-kubelet",
+   "allow-dns",
+   "allow-intra-namespace",
+   "allow-runner-to-flagd",
+   "allow-runner-to-load-generator",
+   "allow-to-otb-gateway",
+   "default-deny"
+  ]
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "frames_source": 232,
+ "frames_followed": 232,
+ "distinct_refs_followed": 232,
+ "bodies_match": true,
+ "segments_written": 13,
+ "traces_frames_followed": 90,
+ "per_stream_storage_order": true,
+ "read_back_equal": true
+}

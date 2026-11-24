@@ -1,0 +1,43 @@
+{
+ "codes": {
+  "leftover traces": 200,
+  "leftover logs": 200,
+  "this capture": 200,
+  "no event time": 200,
+  "before the restart": 200,
+  "leftover after restart": 200
+ },
+ "exit_code": 0,
+ "sealed": true,
+ "stored": [
+  "s2",
+  "s3",
+  "untimed"
+ ],
+ "quarantined": {
+  "logs": {
+   "frames": 1,
+   "records": 1
+  },
+  "traces": {
+   "frames": 2,
+   "records": 2
+  }
+ },
+ "quarantine_lines": [
+  [
+   "traces",
+   1
+  ],
+  [
+   "logs",
+   1
+  ],
+  [
+   "traces",
+   1
+  ]
+ ],
+ "reopened_manifest_keeps_counts": true,
+ "verify": "full verify ok (0 problems)"
+}

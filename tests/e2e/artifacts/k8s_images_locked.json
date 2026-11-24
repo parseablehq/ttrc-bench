@@ -1,0 +1,73 @@
+{
+ "groups": [
+  "background",
+  "demo",
+  "runner",
+  "stacks",
+  "stacks-manifests"
+ ],
+ "images": {
+  "background": [
+   "gcr.io/distroless/static-debian12@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab",
+   "golang@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdece2955af1c23b37ae5d55a253",
+   "otel/opentelemetry-collector-contrib@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1"
+  ],
+  "runner": [
+   "node@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8",
+   "node@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392",
+   "python@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258"
+  ],
+  "stacks-manifests": [
+   "clickhouse/clickhouse-server@sha256:9716a352d25f538bd19d868b001141e7a60e4d035bc9b823658c6a071660aa61",
+   "python@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a"
+  ],
+  "stacks": [
+   "clickhouse/clickhouse-server@sha256:9716a352d25f538bd19d868b001141e7a60e4d035bc9b823658c6a071660aa61",
+   "grafana/grafana@sha256:b28bae15e219c998fb0e0424ed724930cc61b1f61fb404d47c862f9a23f9e572",
+   "grafana/loki@sha256:1107dd5274e0ada47e42472b7a7e71f3b2a2fe878878108f3e2f9e51528f0193",
+   "grafana/tempo@sha256:3076b8dcdfb32fd6bc5ccef85e7b7313e6199b9cb84366257fc17ecb696db5fd",
+   "otel/opentelemetry-collector-contrib@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1",
+   "prom/prometheus@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e",
+   "python@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a",
+   "quay.io/parseablehq/parseable@sha256:ddc281432ba8b206619e049b0d97f63f89501bc33b16d8c2e14f82ee77d2e8ab"
+  ],
+  "demo": [
+   "busybox@sha256:bdf57e528e45e4433820e045b29b4597825a1c9e38353532d90a01445013f82e",
+   "ghcr.io/open-feature/flagd@sha256:32234e63c1d0634883aabd31cbd46802934aaaef0153dfd653b5d1017940bb4e",
+   "ghcr.io/open-telemetry/demo@sha256:0e82843cf7edf7e9d00faac5fcda6202ef21e0f23aa6f95076738a6d1fb0ebc8",
+   "ghcr.io/open-telemetry/demo@sha256:1f74a6f951f2fc819e8936b3ca52ecb725ddd2043e808e1075c02b197869b08b",
+   "ghcr.io/open-telemetry/demo@sha256:2aad4d6786a651519eeaf0f46cb97b9f8d6f6125c176bd0d8ce4ffd463dab7f7",
+   "ghcr.io/open-telemetry/demo@sha256:47b84fb723a4e811f2a0c0d81049ef96c3591a35cef70811c40c8ba1ea028f23",
+   "ghcr.io/open-telemetry/demo@sha256:6803df8c2a128bde1e4188d1f3234ef6b27e47d08b06ba0c28a073a9be0a4856",
+   "ghcr.io/open-telemetry/demo@sha256:7552e1fe559e4d740bd2ffae5fb63b5db51be2a3d2e1db9f08553c10bd001024",
+   "ghcr.io/open-telemetry/demo@sha256:89f6ae9f3d39b179087dacd28d2e1a0dae3f231f858c3c7214b8fae9dc98d1dd",
+   "ghcr.io/open-telemetry/demo@sha256:8ad98c2b008522fe34dcf0b421ff4906fecad296613786c6421e019004673ccc",
+   "ghcr.io/open-telemetry/demo@sha256:8b78adc52028f867baaae4d2f0cf5466a79b2a31f93a01fc2e2d7d9ee246a814",
+   "ghcr.io/open-telemetry/demo@sha256:9a7398db29925d33daafa454685110f5217514adfe0930da8eea1fd16221d860",
+   "ghcr.io/open-telemetry/demo@sha256:a1542f8f40f5c6eeacb85f2f5e91ed43f71bf26670d575e137fd3a6e705fc2f7",
+   "ghcr.io/open-telemetry/demo@sha256:a4386d67549e5124369c44d08d056be8aba38003203c4fe6fa9519d1b4e33bbc",
+   "ghcr.io/open-telemetry/demo@sha256:a627c85d919c28fe6279534c1c7bcc04941e0a981cca53f0ef8f59fa28a7fa59",
+   "ghcr.io/open-telemetry/demo@sha256:a882adabf4a5bf2e3108909f41e030aa4fad0684647eaee1754d3243ca9dce37",
+   "ghcr.io/open-telemetry/demo@sha256:c383035e0b3e7e077be8e8ed3470cdd94490f081deb45b17af0bac3124d26090",
+   "ghcr.io/open-telemetry/demo@sha256:e75ad3c5c75c2b1cf83e495502eedc62a091ea5bea58503afdb8c7eaa9710c90",
+   "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc",
+   "ghcr.io/valkey-io/valkey@sha256:107b203169a20ef7c87548c157f4e4a833dbbbd20fefd3a26740b7f98ac80216",
+   "postgres@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636"
+  ]
+ },
+ "unpinned": {
+  "background": [],
+  "runner": [],
+  "stacks-manifests": [],
+  "stacks": [],
+  "demo": []
+ },
+ "not_in_lock": {
+  "background": [],
+  "runner": [],
+  "stacks-manifests": [],
+  "stacks": [],
+  "demo": []
+ },
+ "unused": []
+}

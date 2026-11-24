@@ -1,0 +1,69 @@
+# B1 Tempo 3.1.0 monolithic (no Kafka). Block retention covers corpus plus runs; metrics generator disabled
+# (no metrics_generator block and no processors in overrides), so Tempo adds no series to Prometheus;
+# attribute truncation and per-tenant trace limits raised; Tempo's own MCP server on for mcp-grafana's tempo tools.
+stream_over_http_enabled: true
+
+server:
+  http_listen_port: 3200
+  log_level: warn
+  grpc_server_max_recv_msg_size: 134217728
+  grpc_server_max_send_msg_size: 134217728
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
+  max_attribute_bytes: 0
+
+query_frontend:
+  mcp_server:
+    enabled: true
+  search:
+    # a span count needs every matching span of a trace; the default caps spss at 100
+    max_spans_per_span_set: 0
+
+# The live-store dates a block by the time each trace arrived, clamped to [arrival - slack, arrival + slack].
+# With the 2 m default, a span that starts more than 2 m before its batch arrives (long spans, a resumed replay)
+# lands in a block whose time range excludes it, and search over that range skips it until the block reaches the
+# backend 15 m later. Root cause of U4's "0, then 1940, then 444 traces": docs/v1/units/U5-U6.md.
+#
+# A live trace is flushed after max_trace_idle without a new span (default 5 s) or max_trace_live since creation.
+# At 1x the demo exports one trace's spans over up to 33 s, so with the defaults 739 of 8868 traces were written as
+# two or more rows; rows in different WAL blocks stay separate until compaction, and the search combiner keeps only
+# the spanset with the larger `matched`, dropping the other fragment's spans. A trace whose spans arrive over more
+# than max_trace_live still fragments. Live traces are not searchable, hence B1 settle_s 90.
+live_store:
+  max_trace_idle: 30s
+  max_trace_live: 60s
+  wal:
+    ingestion_time_range_slack: 2160h
+
+backend_worker:
+  compaction:
+    block_retention: 2160h
+
+storage:
+  trace:
+    backend: local
+    wal:
+      path: /var/tempo/wal
+    local:
+      path: /var/tempo/blocks
+
+overrides:
+  defaults:
+    ingestion:
+      rate_limit_bytes: 200000000
+      burst_size_bytes: 400000000
+      max_traces_per_user: 0
+      max_attribute_bytes: 0
+    global:
+      max_bytes_per_trace: 50000000
+    read:
+      # search results carry 32-hex trace ids, as every other stack stores them
+      left_pad_trace_ids: true
+
+usage_report:
+  reporting_enabled: false

@@ -1,0 +1,23 @@
+<!-- Query limits (mounted into users.d). Per-query memory comes from the profile; spilling is on so a large
+     GROUP BY or ORDER BY degrades to disk instead of failing. otb_agent is the read-only profile the MCP
+     server's user is bound to (created by post_up). -->
+<clickhouse>
+    <profiles>
+        <default>
+            <max_memory_usage from_env="B3_MAX_QUERY_MEMORY"/>
+            <max_bytes_before_external_group_by from_env="B3_SPILL_BYTES"/>
+            <max_bytes_before_external_sort from_env="B3_SPILL_BYTES"/>
+        </default>
+        <otb_agent>
+            <readonly>2</readonly>
+            <max_memory_usage from_env="B3_MAX_QUERY_MEMORY"/>
+            <max_bytes_before_external_group_by from_env="B3_SPILL_BYTES"/>
+            <max_bytes_before_external_sort from_env="B3_SPILL_BYTES"/>
+            <max_execution_time>120</max_execution_time>
+            <constraints>
+                <max_memory_usage><readonly/></max_memory_usage>
+                <max_execution_time><readonly/></max_execution_time>
+            </constraints>
+        </otb_agent>
+    </profiles>
+</clickhouse>

@@ -1,0 +1,2 @@
+level,stack,instances,runs,k,success,success_lo,success_hi,pass_k,pass_k_lo,pass_k_hi
+1,fixture-stdio,1,1,1,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000

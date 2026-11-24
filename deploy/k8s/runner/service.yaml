@@ -1,0 +1,12 @@
+# The capture gateway in the runner container; demo and background collectors export OTLP/HTTP here.
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-gateway
+  namespace: otb
+  labels: {app: otb-runner}
+spec:
+  type: ClusterIP
+  selector: {app: otb-runner}
+  ports:
+    - {name: otlp-http, port: 4318, targetPort: 4318, protocol: TCP}

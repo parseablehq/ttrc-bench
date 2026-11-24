@@ -1,0 +1,8 @@
+description: SERVER operations (service, span name) with at least min_spans spans in both the window and the
+  baseline window.
+params:
+  window: window
+  baseline: window
+  min_spans: int
+columns: [service, name, n, n_base]
+exact_on: []

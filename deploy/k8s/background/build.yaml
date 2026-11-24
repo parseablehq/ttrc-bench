@@ -1,0 +1,51 @@
+# The generators are built in each pod's init container from one pinned otel-benchmark commit, as
+# otel-benchmark/k8s/heavy/heavy-ingest.yaml.tmpl does, so no image registry is involved: the golang image is pinned
+# by digest, git checks the commit's content by its hash, and go.sum pins every module. The repository is private
+# today; the optional Secret otb-bg-github (key token) is sent when present. The binary's sha256 goes to the
+# init container's log, and with -trimpath the same commit and image give the same binary. The pod's claim keeps
+# the caches and the binary for the pinned commit, so a restart or a redeploy skips the fetch and the build.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otb-bg-source
+  namespace: otb-bg
+data:
+  OTB_BG_REPO: https://github.com/parseablehq/otel-benchmark.git
+  OTB_BG_COMMIT: 4f7163f3046c02e63bc6e742b1393fe3632ee298
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otb-bg-build
+  namespace: otb-bg
+data:
+  build.sh: |
+    set -eux
+    : "${OTB_BG_REPO:?}" "${OTB_BG_COMMIT:?}" "${OTB_BG_GENERATOR:?}"
+    export HOME=/work GOPATH=/work/go GOCACHE=/work/cache GOTOOLCHAIN=local CGO_ENABLED=0 GOFLAGS=-trimpath
+    # the root filesystem is read-only: go's build scratch goes to the emptyDir too
+    mkdir -p /work/tmp /work/bin && export GOTMPDIR=/work/tmp TMPDIR=/work/tmp
+    bin="/work/bin/$OTB_BG_GENERATOR-$OTB_BG_COMMIT"
+    if [ -x "$bin" ]; then
+      cp "$bin" /shared/generator
+      echo "cached $OTB_BG_GENERATOR at $OTB_BG_COMMIT: sha256 $(sha256sum /shared/generator | cut -d' ' -f1)"
+      exit 0
+    fi
+    auth=""
+    if [ -n "${GH_TOKEN:-}" ]; then
+      auth="http.extraHeader=Authorization: Basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+    fi
+    # a restarted init container keeps /work: start the checkout over, keep the module cache
+    rm -rf /work/src
+    git init -q /work/src
+    cd /work/src
+    git remote add origin "$OTB_BG_REPO"
+    git ${auth:+-c "$auth"} fetch -q --depth 1 origin "$OTB_BG_COMMIT" || git ${auth:+-c "$auth"} fetch -q origin
+    git -c advice.detachedHead=false checkout -q "$OTB_BG_COMMIT"
+    test "$(git rev-parse HEAD)" = "$OTB_BG_COMMIT"
+    cd "$OTB_BG_GENERATOR"
+    # A truncated module download fails the build; go.sum still checks whatever a retry fetches.
+    for i in 1 2 3; do go mod download && break; sleep 5; done
+    go build -o "$bin.part" . && mv "$bin.part" "$bin"
+    cp "$bin" /shared/generator
+    echo "built $OTB_BG_GENERATOR at $OTB_BG_COMMIT: sha256 $(sha256sum /shared/generator | cut -d' ' -f1)"

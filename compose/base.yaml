@@ -1,0 +1,7 @@
+# Shared by every stack: the project network, named so `docker run --network otb` (B1's MCP server) can join it.
+# Each stack's compose.yaml labels its services `otb.stack` and `otb.role` (backend | ingest | setup);
+# `otb doctor` refuses services without them.
+name: otb
+networks:
+  default:
+    name: otb

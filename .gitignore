@@ -1,0 +1,29 @@
+# secrets
+*.key
+# the harness v2 dry-run recording and the demo checkout it was captured from
+corpus/dryrun/demo/
+corpus/dryrun/recording
+# build artefacts
+docs/history/pdf/*.html
+.DS_Store
+results/*/cells/*/cwd/
+__pycache__/
+# otb v1
+.venv/
+.otb/
+state/
+corpora/*/segments/
+corpora/*/derived/
+**/.writer.lock
+tests/fixtures/*/derived/
+suites/*/
+!suites/.gitkeep
+runs/scratch-*/
+.claude/
+# raw gate evidence is published with the run tarball, not committed; runs hard-link it from the content store
+runs/*/inputs/gate/
+runs/.evidence/
+# untracked leftovers of the retired v2 harness and pilot (dependencies, downloaded sample data)
+harness/
+pilot/
+node_modules/

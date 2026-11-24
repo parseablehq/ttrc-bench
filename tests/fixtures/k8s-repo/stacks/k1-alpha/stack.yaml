@@ -1,0 +1,58 @@
+id: k1-alpha
+label: "K1 fixture alpha"
+family: unified-columnar
+compose_file: compose.yaml
+
+ingest:
+  service: ingest-k1
+  url: http://127.0.0.1:4391
+  health_url: http://127.0.0.1:13391/
+  metrics_url: http://127.0.0.1:18891/metrics
+  paths: {traces: /v1/traces, logs: /v1/logs, metrics: /v1/metrics}
+  max_inflight: 1
+
+collector:
+  config: collector.yaml
+  processors: {}
+
+urls:
+  store: http://127.0.0.1:39100
+
+arrival_time_sensitive: false
+max_late_s: {traces: null, logs: null, metrics: null}
+settle_s: 0
+
+credentials:
+  - {name: K1_ADMIN_PASSWORD, kind: password}
+  - {name: K1_TOKEN, kind: password}
+
+post_up: []
+
+readiness:
+  - {name: store, url: "http://127.0.0.1:__PORT__/k1/compose/ready"}
+
+mcp:
+  kind: binary
+  argv: ["${OTB_HOME}/bin/fx-mcp", "--stdio"]
+  env:
+    STORE_URL: "http://127.0.0.1:39100"
+    TOKEN: "${K1_TOKEN}"
+  inherit: []
+  lock: servers/fx/fx-mcp.lock.yaml
+  pin: "servers/fx/fx-mcp.lock.yaml@sha256:__LOCK_SHA__"
+
+k8s:
+  namespace: otb-k1
+  releases:
+    - {name: k1-store, chart: fx/store, version: 1.0.0, values: deploy/k8s/stacks/k1-alpha/store.yaml}
+    - {name: k1-ingest, chart: fx/collector, version: 0.1.0, values: deploy/k8s/stacks/k1-alpha/ingest.yaml}
+  endpoints:
+    ingest.url: http://ingest-k1.otb-k1.svc.cluster.local:4318
+    ingest.health_url: http://ingest-k1.otb-k1.svc.cluster.local:13133/
+    ingest.metrics_url: http://ingest-k1.otb-k1.svc.cluster.local:8888/metrics
+    urls.store: http://store.otb-k1.svc.cluster.local:9100
+    readiness.store: http://127.0.0.1:__PORT__/k1/k8s/ready
+    mcp.env.STORE_URL: http://store.otb-k1.svc.cluster.local:9100
+
+phase: {}
+disclosures: ["Fixture stack; not a system under test."]

@@ -1,0 +1,83 @@
+# The whole harness on GKE as one pod on a dedicated node: a Docker daemon that runs the unchanged compose
+# stacks and the OTel Demo, beside a runner that runs otb, the MCP servers and the agent CLI. Both containers share
+# the pod's network, so every 127.0.0.1 URL in stacks/*/stack.yaml resolves as on the laptop, and both mount the
+# work volume at the same path, so compose bind mounts resolve inside the daemon.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: otb
+---
+# The capture gateway, which `otb capture` serves on 0.0.0.0:4318 in the runner, for OTel Demo collectors running
+# in other pods: OTB_GATEWAY=http://otb-gateway.otb.svc.cluster.local:4318.
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-gateway
+  namespace: otb
+spec:
+  selector: {app: otb-host}
+  ports:
+  - {name: otlp-http, port: 4318, targetPort: 4318, protocol: TCP}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: otb-host
+  namespace: otb
+spec:
+  serviceName: otb-host
+  replicas: 1
+  selector:
+    matchLabels: {app: otb-host}
+  template:
+    metadata:
+      labels: {app: otb-host}
+    spec:
+      # replace <gke-nodepool> and <nodepool-taint> with the dedicated node pool and its taint value before applying
+      nodeSelector: {cloud.google.com/gke-nodepool: <gke-nodepool>}
+      tolerations: [{key: dedicated, operator: Equal, value: <nodepool-taint>, effect: NoSchedule}]
+      terminationGracePeriodSeconds: 120
+      initContainers:
+      - name: docker-cli
+        image: docker:27.5.1-dind@sha256:aa3df78ecf320f5fafdce71c659f1629e96e9de0968305fe1de670e0ca9176ce
+        command: [sh, -c, "cp /usr/local/bin/docker /tools/docker && mkdir -p /tools/cli-plugins && cp /usr/local/libexec/docker/cli-plugins/docker-compose /usr/local/libexec/docker/cli-plugins/docker-buildx /tools/cli-plugins/"]
+        volumeMounts: [{name: tools, mountPath: /tools}]
+      containers:
+      - name: dockerd
+        image: docker:27.5.1-dind@sha256:aa3df78ecf320f5fafdce71c659f1629e96e9de0968305fe1de670e0ca9176ce
+        command: [dind, dockerd, "--host=unix:///run/otb-docker/docker.sock", "--mtu=1460"]
+        securityContext: {privileged: true}
+        resources:
+          requests: {cpu: "24", memory: 140Gi}
+          limits: {cpu: "24", memory: 150Gi}
+        volumeMounts:
+        - {name: data, mountPath: /var/lib/docker, subPath: docker}
+        - {name: data, mountPath: /work, subPath: work}
+        - {name: sock, mountPath: /run/otb-docker}
+      - name: runner
+        image: debian:bookworm-20250929-slim@sha256:7e490910eea2861b9664577a96b54ce68ea3e02ce7f51d89cb0103a6f9c386e0
+        command: [sleep, infinity]
+        workingDir: /work/parseable
+        env:
+        - {name: DOCKER_HOST, value: "unix:///run/otb-docker/docker.sock"}
+        - {name: DOCKER_CONFIG, value: /work/.docker}
+        - {name: HOME, value: /work/home}
+        - {name: PATH, value: "/work/tools/bin:/work/home/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"}
+        - name: CLAUDE_CODE_OAUTH_TOKEN
+          valueFrom: {secretKeyRef: {name: claude-auth, key: CLAUDE_CODE_OAUTH_TOKEN, optional: true}}
+        resources:
+          requests: {cpu: "6", memory: 16Gi}
+          limits: {cpu: "6", memory: 16Gi}
+        volumeMounts:
+        - {name: data, mountPath: /work, subPath: work}
+        - {name: tools, mountPath: /tools}
+        - {name: sock, mountPath: /run/otb-docker}
+      volumes:
+      - {name: tools, emptyDir: {}}
+      - {name: sock, emptyDir: {}}
+  volumeClaimTemplates:
+  - metadata: {name: data}
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: premium-rwo
+      resources: {requests: {storage: 500Gi}}

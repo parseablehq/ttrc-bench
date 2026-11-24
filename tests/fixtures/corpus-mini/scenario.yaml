@@ -1,0 +1,8 @@
+id: dryrun-v2-import
+seed: null
+duration_s: 408
+instances:
+- default
+min_gap_s: 0
+note: 'hand-run v2 capture: no plan existed; schedule.yaml is synthesised from corpus.yaml events'
+slots: []

@@ -1,0 +1,87 @@
+# The 1 TB plan: 12 demo instances for 72 hours. What MAY happen; plan(scenario, catalogue, seed) binds the
+# placeholders and the realised schedule records what DID happen. `otb scenario bytes scenarios/week-ladder.yaml`
+# prints the expected OTLP/JSON bytes from scenarios/rates.yaml, so "1 TB" is arithmetic, not a label.
+# instance "*" means every instance; "any" a seeded pick of one.
+id: week-ladder
+seed: 20261001
+duration_s: 259200
+instances: [eu1, eu2, eu3, us1, us2, us3, ap1, ap2, ap3, sa1, af1, me1]
+min_gap_s: 1800
+
+load:
+  - { at_s: 0, users: 25 }
+  - { at_s: 86400, users: 40 }
+  - { at_s: 172800, users: 25 }
+
+slots:
+  - id: f1
+    kind: fault
+    flag_in: [paymentFailure, cartFailure, productCatalogFailure, adFailure]
+    variant_in: ["25%", "50%", "on"]
+    start_s: { lo: 3600, hi: 21600 }
+    duration_s: { lo: 300, hi: 900 }
+    instance: any
+  - id: f2
+    kind: fault
+    flag_in: [imageSlowLoad, intlShippingSlowdown]
+    start_s: { lo: 25000, hi: 50000 }
+    duration_s: { lo: 600, hi: 1200 }
+    instance: eu1
+  - id: f3
+    kind: fault
+    flag_in: [emailMemoryLeak, adHighCpu, adManualGc]
+    start_s: { lo: 90000, hi: 120000 }
+    duration_s: { lo: 1200, hi: 2400 }
+    instance: us1
+  - id: f4a
+    kind: fault
+    group: g-overlap
+    relation: overlap
+    flag_in: [paymentFailure, cartFailure]
+    variant_in: ["25%", "50%"]
+    start_s: { lo: 130000, hi: 140000 }
+    duration_s: { lo: 900, hi: 1500 }
+    instance: any
+  - id: f4b
+    kind: fault
+    group: g-overlap
+    relation: overlap
+    flag_in: [recommendationCacheFailure, productCatalogLockContention]
+    start_s: { lo: 0, hi: 600 }
+    duration_s: { lo: 600, hi: 1200 }
+    instance: any
+  - id: f5
+    kind: fault
+    flag_in: [kafkaQueueProblems]
+    start_s: { lo: 200000, hi: 220000 }
+    duration_s: { lo: 900, hi: 1800 }
+    instance: ap1
+
+  - id: d1
+    kind: decoy
+    type: benign_restart
+    target_in: [cart, currency, quote]
+    start_s: { lo: 60000, hi: 80000 }
+    duration_s: { lo: 60, hi: 120 }
+    instance: any
+  - id: d2
+    kind: decoy
+    type: traffic_gap
+    target_in: [load-generator]
+    params: { users_after: "25" }
+    start_s: { lo: 150000, hi: 160000 }
+    duration_s: { lo: 180, hi: 300 }
+    instance: any
+  - id: d3
+    kind: decoy
+    type: load_step
+    target_in: [load-generator]
+    params: { users_to: "60", users_after: "25" }
+    start_s: { lo: 230000, hi: 240000 }
+    duration_s: { lo: 1800, hi: 1800 }
+    instance: any
+
+  - id: q1
+    kind: quiet
+    start_s: { lo: 30000, hi: 250000 }
+    duration_s: { lo: 1800, hi: 1800 }

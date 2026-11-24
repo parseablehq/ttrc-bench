@@ -1,0 +1,38 @@
+# B4 Parseable: compose service `parseable` on the Parseable chart, standalone local-store (the gke profile sets gcs-store), on compose's v3.2.6 image
+# (the chart defaults to v3.2.3). The chart reads P_ADDR, P_USERNAME and P_PASSWORD from fixed keys of one
+# Secret; the parseable-env Job (objects.yaml) copies them from otb-credentials. The chart's Service is
+# parseable-standalone-service on port 80; objects.yaml adds `parseable` on 8000, the address collector.yaml
+# uses. Resources, the three tuning variables and the storage class come from the profile.
+parseable:
+  fullnameOverride: parseable
+  image:
+    repository: quay.io/parseablehq/parseable
+    tag: v3.2.6@sha256:43e07b06f983e43b50eedce39f49998b6b8202803028cbba9ca7f92550a90596
+  store:
+    type: local-store
+    secretName: parseable-env
+  # compose runs the image's user, root
+  podSecurityContext:
+    runAsUser: 0
+    runAsGroup: 0
+    fsGroup: null
+    fsGroupChangePolicy: null
+  standalone:
+    unified:
+      env:
+        RUST_LOG: null
+        P_NORMALISE_OTEL_PAYLOAD: "true"
+        P_CHECK_UPDATE: "false"
+        P_SEND_ANONYMOUS_USAGE_DATA: "false"
+      podAnnotations: null
+      podLabels: {otb.stack: b4-parseable, otb.role: backend}
+      # compose gates no traffic on readiness: a backend slow to answer /ready under load stays in its Service (5 min)
+      readinessProbe:
+        httpGet: {path: /api/v1/readiness, port: 8000}
+        periodSeconds: 10
+        failureThreshold: 30
+      persistence:
+        data: {enabled: true}
+        staging: {enabled: true}
+  # the chart runs an unpinned curl image to create datasets when this lists any
+  datasets: []

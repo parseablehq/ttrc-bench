@@ -1,0 +1,200 @@
+{
+ "corpus_id": "fixture",
+ "plan_sha256": null,
+ "session_id": "session-mini",
+ "stacks": {
+  "fixture-http": {
+   "checks": {
+    "CountLogs:error_logs@fixture": {
+     "family": "logs.error_by_service",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "logs",
+      "window": null
+     },
+     "signal": "logs",
+     "status": "fail"
+    },
+    "count:logs@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "logs",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "logs",
+     "status": "pass"
+    },
+    "count:metrics@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "metrics",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "metrics",
+     "status": "pass"
+    },
+    "count:traces@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "traces",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "traces",
+     "status": "pass"
+    },
+    "ingest.ledger:logs": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "logs",
+      "window": null
+     },
+     "signal": "logs",
+     "status": "pass"
+    },
+    "ingest.ledger:metrics": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "metrics",
+      "window": null
+     },
+     "signal": "metrics",
+     "status": "pass"
+    },
+    "ingest.ledger:traces": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "traces",
+      "window": null
+     },
+     "signal": "traces",
+     "status": "pass"
+    }
+   },
+   "families": {
+    "logs.error_by_service": "fail",
+    "metrics.series_last": "pass",
+    "spans.error_by_service": "pass"
+   },
+   "ingest_complete": true,
+   "ingest_reasons": [],
+   "signals": {
+    "logs": "fail",
+    "metrics": "pass",
+    "traces": "pass"
+   }
+  },
+  "fixture-stdio": {
+   "checks": {
+    "count:logs@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "logs",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "logs",
+     "status": "pass"
+    },
+    "count:metrics@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "metrics",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "metrics",
+     "status": "pass"
+    },
+    "count:traces@fixture": {
+     "family": "fixture",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "traces",
+      "window": [
+       1789996400000000000,
+       1790012000000000000
+      ]
+     },
+     "signal": "traces",
+     "status": "pass"
+    },
+    "ingest.ledger:logs": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "logs",
+      "window": null
+     },
+     "signal": "logs",
+     "status": "pass"
+    },
+    "ingest.ledger:metrics": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "metrics",
+      "window": null
+     },
+     "signal": "metrics",
+     "status": "pass"
+    },
+    "ingest.ledger:traces": {
+     "family": "ingest.ledger",
+     "region": {
+      "metrics": null,
+      "services": null,
+      "signal": "traces",
+      "window": null
+     },
+     "signal": "traces",
+     "status": "pass"
+    }
+   },
+   "families": {
+    "logs.error_by_service": "pass",
+    "metrics.series_last": "pass",
+    "spans.error_by_service": "pass"
+   },
+   "ingest_complete": true,
+   "ingest_reasons": [],
+   "signals": {
+    "logs": "pass",
+    "metrics": "pass",
+    "traces": "pass"
+   }
+  }
+ }
+}

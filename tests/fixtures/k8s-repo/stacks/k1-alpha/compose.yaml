@@ -1,0 +1,2 @@
+# Fixture: never started. The compose runtime's tests use the real stacks.
+services: {}

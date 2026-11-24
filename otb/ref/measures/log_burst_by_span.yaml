@@ -1,0 +1,11 @@
+description: 'Error log records (severity_number >= 17, or severity text error or fatal) attributed to the span
+  they carry (trace_id, span_id), counted by the span''s service and name in the window and the baseline. A row is
+  a burst when it has at least min_records in the window and more than twice its baseline count.'
+params:
+  window: window
+  baseline: window
+  min_records:
+    type: int
+    default: 5
+columns: [service, operation, n, n_base]
+exact_on: [logs.error_by_service]

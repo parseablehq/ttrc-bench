@@ -1,0 +1,74 @@
+# A Job that keeps a Viewer service-account token for mcp-grafana in the grafana-mcp-token Secret (key
+# B1_GRAFANA_MCP_TOKEN). It waits for Grafana, and changes nothing while the stored token still authenticates. Its
+# script is grafana_token.py, in the grafana-token-script ConfigMap that generate.py writes into configmaps.yaml.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana-token
+  labels: {otb.stack: b1-lgtm}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: grafana-token
+  labels: {otb.stack: b1-lgtm}
+rules:
+  - {apiGroups: [""], resources: [secrets], resourceNames: [grafana-mcp-token], verbs: [get, update]}
+  - {apiGroups: [""], resources: [secrets], verbs: [create]}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grafana-token
+  labels: {otb.stack: b1-lgtm}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: grafana-token}
+subjects:
+  - {kind: ServiceAccount, name: grafana-token}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-token
+  labels: {otb.stack: b1-lgtm, otb.role: setup}
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 1200
+  # a finished Job is deleted, so the next `up` (an apply) runs it again, also after a failure
+  ttlSecondsAfterFinished: 120
+  template:
+    metadata:
+      labels: {otb.stack: b1-lgtm, otb.role: setup}
+    spec:
+      serviceAccountName: grafana-token
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: token
+          image: python:3.13.16-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
+          command: [python3, /job/grafana_token.py]
+          env:
+            - {name: GRAFANA_URL, value: "http://grafana:3000"}
+            # the service account viewer_service_account in stacks/b1-lgtm/probes.py creates
+            - {name: SA_NAME, value: otb-agent}
+            - {name: SECRET_NAME, value: grafana-mcp-token}
+            - {name: SECRET_KEY, value: B1_GRAFANA_MCP_TOKEN}
+            - name: ADMIN_USER
+              valueFrom: {secretKeyRef: {name: otb-credentials, key: B1_GRAFANA_ADMIN_USER}}
+            - name: ADMIN_PASSWORD
+              valueFrom: {secretKeyRef: {name: otb-credentials, key: B1_GRAFANA_ADMIN_PASSWORD}}
+          resources:
+            requests: {cpu: 100m, memory: 64Mi}
+            limits: {cpu: 100m, memory: 64Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          volumeMounts:
+            - {name: job, mountPath: /job, readOnly: true}
+      volumes:
+        - name: job
+          configMap: {name: grafana-token-script}

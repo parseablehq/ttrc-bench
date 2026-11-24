@@ -1,0 +1,15 @@
+{
+ "ref_rows": [
+  [
+   "Reference build time, 2 workers",
+   "4.33 h",
+   "extrapolated"
+  ],
+  [
+   "Reference build time, 8 workers",
+   "1.08 h",
+   "extrapolated"
+  ]
+ ],
+ "scale_report_s": 0.32
+}

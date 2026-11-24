@@ -1,0 +1,22 @@
+{
+ "frames_posted": 232,
+ "acked": 232,
+ "crashes": 3,
+ "every_replay_answered_200": true,
+ "every_crash_replayed_from_a_sealed_segment": true,
+ "gateway_exit": 0,
+ "verify": "full verify ok (0 problems)",
+ "frames_stored": 232,
+ "distinct_bodies_stored": 232,
+ "stored_equals_posted": true,
+ "records": {
+  "traces": 24323,
+  "logs": 8394,
+  "metrics": 40712
+ },
+ "fixture_records": {
+  "traces": 24323,
+  "logs": 8394,
+  "metrics": 40712
+ }
+}

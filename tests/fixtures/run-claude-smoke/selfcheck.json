@@ -1,0 +1,57 @@
+{
+ "checks": {
+  "ctx_bytes_match_transcript": {
+   "cells": 1,
+   "mismatches": [],
+   "status": "pass"
+  },
+  "every_cell_isolated": {
+   "invalid": [],
+   "status": "pass"
+  },
+  "exclusions_follow_gate": {
+   "missing": [],
+   "planned": 1,
+   "status": "pass",
+   "wrong": []
+  },
+  "gate_rejudge_identical": {
+   "reason": "gate rejudge not implemented yet (U6)",
+   "status": "skip"
+  },
+  "inputs_match_prereg": {
+   "code_changed_since_prereg": [],
+   "inputs_changed": [],
+   "status": "pass"
+  },
+  "no_local_paths_or_secrets": {
+   "hits": [],
+   "status": "pass"
+  },
+  "one_commit_model_client": {
+   "client_versions": [
+    "2.1.285"
+   ],
+   "commits": [
+    "b8ace824d0690106a2aa338a20d55e8b9f670034"
+   ],
+   "dirty_cells": [],
+   "models": [
+    "claude-haiku-4-5-20251001"
+   ],
+   "status": "pass"
+  },
+  "regrade_byte_identical": {
+   "compared": [
+    "grade/runs.jsonl",
+    "grade/summary.json",
+    "report/report.md",
+    "report/tables/controls.csv",
+    "report/tables/levels.csv"
+   ],
+   "differ": [],
+   "status": "pass"
+  }
+ },
+ "pass": true
+}

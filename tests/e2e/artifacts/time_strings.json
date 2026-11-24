@@ -1,0 +1,27 @@
+{
+ "corpus-mini": {
+  "found": {
+   "epoch_attr_out_of_band": 2,
+   "iso8601": 3785
+  },
+  "frames_with_time_strings": 88,
+  "recording_time_left": 0,
+  "rewritten": {
+   "iso8601": 3785
+  }
+ },
+ "dryrun": {
+  "found": {
+   "epoch_attr": 1,
+   "epoch_attr_out_of_band": 7,
+   "iso8601": 35448
+  },
+  "frames_with_time_strings": 1060,
+  "recording_time_left": 0,
+  "rewritten": {
+   "epoch_attr": 1,
+   "iso8601": 35448
+  }
+ },
+ "shift_s": 691620
+}

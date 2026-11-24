@@ -1,0 +1,11 @@
+description: 'Last occurrence of a fault signature in the window (error span status message or log body). The
+  fault has recovered when the window runs on for at least quiet_s seconds after it; it recovered from the next
+  whole minute after the last occurrence.'
+params:
+  window: window
+  signature: str
+  quiet_s:
+    type: int
+    default: 300
+columns: [last_ns, recovered, recovered_at_ns]
+exact_on: []

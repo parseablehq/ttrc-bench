@@ -1,0 +1,30 @@
+# Compose override for one OTel Demo instance feeding TTRC-Bench. From the demo checkout, with absolute paths:
+#   OTB_INSTANCE=eu1 OTB_GATEWAY=http://<otb-host>:4318 \
+#   OTEL_COLLECTOR_CONFIG_EXTRAS=/abs/path/capture/demo-overlay/otelcol-otb.yml \
+#   docker compose -p demo-eu1 -f compose.yaml -f /abs/path/capture/demo-overlay/compose.otb.yaml up -d
+# then on the TTRC-Bench host:
+#   otb capture <scenario.yaml> --out corpora/<name> --instances eu1 \
+#     --flagd-ui http://<demo-host>:14000 --ofrep http://<demo-host>:18016
+# The demo sets container_name on every service, so one Docker host runs one demo instance.
+services:
+  otel-collector:
+    environment:
+      - OTB_GATEWAY=${OTB_GATEWAY:?set OTB_GATEWAY to the TTRC-Bench gateway URL}
+      - OTB_INSTANCE=${OTB_INSTANCE:?set OTB_INSTANCE to a unique instance label}
+      - GOMEMLIMIT=800MiB
+    volumes:
+      - otb-queue:/var/lib/otelcol/otb-queue
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+  flagd:
+    ports:
+      - "${OTB_OFREP_PORT:-18016}:${FLAGD_OFREP_PORT}"
+  flagd-ui:
+    ports:
+      - "${OTB_FLAGD_UI_PORT:-14000}:${FLAGD_UI_PORT}"
+volumes:
+  otb-queue:

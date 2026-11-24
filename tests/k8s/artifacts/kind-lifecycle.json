@@ -1,0 +1,51 @@
+{
+ "after_down_volumes": {
+  "pvcs": 0,
+  "releases": 0
+ },
+ "after_reup": {
+  "b1-lgtm": {
+   "is_empty": true,
+   "provisioned": [
+    "viewer_service_account"
+   ]
+  },
+  "b3-clickhouse": {
+   "is_empty": true,
+   "provisioned": [
+    "readonly_agent_user"
+   ]
+  },
+  "b4-parseable": {
+   "is_empty": true,
+   "provisioned": [
+    "reader_api_key"
+   ]
+  }
+ },
+ "pods": {
+  "otb-b1": {
+   "grafana": "Guaranteed",
+   "ingest-b1": "Guaranteed",
+   "loki": "Guaranteed",
+   "prometheus": "Guaranteed",
+   "tempo": "Guaranteed"
+  },
+  "otb-b3": {
+   "clickhouse": "Guaranteed",
+   "ingest-b3": "Guaranteed"
+  },
+  "otb-b4": {
+   "ingest-b4": "Guaranteed",
+   "parseable-standalone": "Guaranteed"
+  }
+ },
+ "second_up_changed_pods": false,
+ "second_up_job_logs": {
+  "grafana-token": "grafana-mcp-token: token still valid, unchanged",
+  "parseable-env": "parseable-env: unchanged"
+ },
+ "second_up_rewrote_parseable_env": false,
+ "second_up_rotated_token": false,
+ "token_authenticates": true
+}

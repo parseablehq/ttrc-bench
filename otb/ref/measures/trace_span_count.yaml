@@ -1,0 +1,7 @@
+description: Spans of one trace, whole corpus (span events are not spans).
+params:
+  trace_id: str
+columns:
+- n
+exact_on:
+- traces.span_count

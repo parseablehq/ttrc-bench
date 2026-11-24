@@ -1,0 +1,8 @@
+# Added after compose.otb.yaml when the demo runs in the GKE harness pod. flagd-ui is an Elixir app whose VM starts
+# one scheduler per visible core; the pod shows 48 cores and the demo's 200M limit OOM-kills it on start.
+services:
+  flagd-ui:
+    deploy:
+      resources:
+        limits:
+          memory: 768M

@@ -1,0 +1,98 @@
+{
+ "arrival_horizon_s": 606,
+ "complete": false,
+ "finished": true,
+ "in_doubt": [],
+ "last_outcome_ns": 1791012133458370000,
+ "late": {
+  "logs": [],
+  "metrics": [
+   "metrics/g0/000000#1"
+  ],
+  "traces": [
+   "traces/g0/000000#5",
+   "traces/g0/000000#6"
+  ]
+ },
+ "late_spans": {
+  "logs": [],
+  "metrics": [
+   {
+    "end_ns": 1791009394824000906,
+    "frame": "metrics/g0/000000#1",
+    "late_s": 12.949,
+    "start_ns": 1791009381692658655
+   }
+  ],
+  "traces": [
+   {
+    "end_ns": 1791009395486393200,
+    "frame": "traces/g0/000000#5",
+    "late_s": 14.28,
+    "start_ns": 1791009380469101000
+   },
+   {
+    "end_ns": 1791009395403000000,
+    "frame": "traces/g0/000000#6",
+    "late_s": 12.371,
+    "start_ns": 1791009382403000000
+   }
+  ]
+ },
+ "rejected": [],
+ "session": "live-45b-follow-20261003T063606Z",
+ "signals": {
+  "logs": {
+   "complete": true,
+   "frames_expected": 1327,
+   "frames_missing": 0,
+   "frames_ok": 1327,
+   "frames_rejected": 0,
+   "late_bound_s": 10.0,
+   "late_frames": 0,
+   "late_max_s": 8.583,
+   "late_p50_s": 3.08,
+   "late_p99_s": 6.992,
+   "records_expected": 65428,
+   "records_ok": 65428,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  },
+  "metrics": {
+   "complete": false,
+   "frames_expected": 834,
+   "frames_missing": 0,
+   "frames_ok": 834,
+   "frames_rejected": 0,
+   "late_bound_s": 10.0,
+   "late_frames": 1,
+   "late_max_s": 12.949,
+   "late_p50_s": 2.36,
+   "late_p99_s": 7.291,
+   "records_expected": 691875,
+   "records_ok": 691875,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  },
+  "traces": {
+   "complete": false,
+   "frames_expected": 1350,
+   "frames_missing": 0,
+   "frames_ok": 1350,
+   "frames_rejected": 0,
+   "late_bound_s": 10.0,
+   "late_frames": 2,
+   "late_max_s": 14.28,
+   "late_p50_s": 3.135,
+   "late_p99_s": 7.557,
+   "records_expected": 190816,
+   "records_ok": 190816,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  }
+ },
+ "stack": "b4-parseable"
+}

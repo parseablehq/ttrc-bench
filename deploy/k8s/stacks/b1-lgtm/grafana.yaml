@@ -1,0 +1,69 @@
+# B1 Grafana: compose service `grafana` on the grafana-community chart, pinned to compose's 13.2.3 image (the
+# chart defaults to 13.2.4 distroless). Datasources are stacks/b1-lgtm/config/grafana/datasources.yaml byte for
+# byte, from the grafana-datasources ConfigMap of release otb-config. Admin credentials come from the
+# otb-credentials Secret the runtime applies. Resources come from the profile.
+fullnameOverride: grafana
+
+image:
+  registry: docker.io
+  repository: grafana/grafana
+  tag: 13.2.3
+  sha: b28bae15e219c998fb0e0424ed724930cc61b1f61fb404d47c862f9a23f9e572
+
+admin:
+  existingSecret: otb-credentials
+  userKey: B1_GRAFANA_ADMIN_USER
+  passwordKey: B1_GRAFANA_ADMIN_PASSWORD
+
+env:
+  GF_ANALYTICS_REPORTING_ENABLED: "false"
+  GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+  GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
+  GF_PLUGINS_PREINSTALL_DISABLED: "true"
+  GF_NEWS_NEWS_FEED_ENABLED: "false"
+  GF_USERS_ALLOW_SIGN_UP: "false"
+
+# The chart's grafana.ini restates the image's paths; its other keys are not in compose.
+grafana.ini:
+  analytics: null
+  plugins: null
+  server: null
+
+goMemLimit:
+  enabled: false
+
+extraConfigmapMounts:
+  - name: otb-datasources
+    configMap: grafana-datasources
+    mountPath: /etc/grafana/provisioning/datasources/otb.yaml
+    subPath: otb.yaml
+    readOnly: true
+
+podLabels: {otb.stack: b1-lgtm, otb.role: backend}
+# compose gates no traffic on readiness: a backend slow to answer /ready under load stays in its Service (5 min)
+readinessProbe:
+  failureThreshold: 30
+
+service:
+  port: 3000
+
+persistence:
+  enabled: true
+  type: pvc
+# compose stops the old container before starting the new; a rolling update would run two Grafanas on one
+# ReadWriteOnce volume (and its sqlite database)
+deploymentStrategy:
+  type: Recreate
+
+# fsGroup 472 already owns the volume; the chown init container runs an unpinned busybox
+initChownData:
+  enabled: false
+
+testFramework:
+  enabled: false
+
+rbac:
+  create: false
+  pspEnabled: false
+serviceAccount:
+  create: true

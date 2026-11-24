@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: k1-store}
+spec:
+  replicas: 1
+  template:
+    metadata: {labels: {app: store}}
+    spec:
+      containers:
+        - name: store
+          image: fx/store:1.0.0@sha256:2222222222222222222222222222222222222222222222222222222222222222
+          resources: __PROFILE__

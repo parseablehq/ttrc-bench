@@ -1,0 +1,20 @@
+# B1 Prometheus: OTLP receiver only (no scrape configs, so no self-scrape series). Metric names use the default
+# OTLP translation (UnderscoreEscapingWithSuffixes: unit and _total suffixes), as shipped. Every resource attribute is promoted to a
+# label so series from different resources never collide (minus a few long host/process values).
+# Retention is by size (flag in compose.yaml); out-of-order window for frames that cross a feeder's in-flight window.
+global:
+  evaluation_interval: 1m
+storage:
+  tsdb:
+    out_of_order_time_window: 10m
+otlp:
+  promote_all_resource_attributes: true
+  ignore_resource_attributes:
+    - process.command_line
+    - process.command_args
+    - process.command
+    - process.executable.path
+    - os.description
+    - host.cpu.model.name
+  keep_identifying_resource_attributes: true
+scrape_configs: []

@@ -1,0 +1,14 @@
+# Overlay on the OTel Demo 3.1.0 compose.yaml for the injector E2E: only flagd and flagd-ui, pinned by digest,
+# with the flag file in a test directory (OTB_FLAGD_DIR) instead of the demo checkout, distinct container names,
+# and flagd's OFREP port published so the test can ask flagd what it serves.
+services:
+  flagd:
+    image: ghcr.io/open-feature/flagd:v0.16.0@sha256:32234e63c1d0634883aabd31cbd46802934aaaef0153dfd653b5d1017940bb4e
+    container_name: otbtest-flagd
+    volumes:
+      - ${OTB_FLAGD_DIR}:/etc/flagd
+  flagd-ui:
+    image: ghcr.io/open-telemetry/demo:3.1.0-flagd-ui@sha256:97a3d37e709f80e2018cdc0d45ea12d5b59092693e0e003d65089da966107062
+    container_name: otbtest-flagd-ui
+    volumes:
+      - ${OTB_FLAGD_DIR}:/app/data

@@ -1,0 +1,131 @@
+{
+ "ui": {
+  "entry": {
+   "flag": "paymentFailure",
+   "variant": "50%",
+   "status": "realised"
+  },
+  "actions": [
+   [
+    "flag.write",
+    "on",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "on",
+    true,
+    "50%",
+    "50%"
+   ],
+   [
+    "flag.write",
+    "off",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "off",
+    true,
+    "off",
+    "off"
+   ]
+  ]
+ },
+ "file": {
+  "entry": {
+   "flag": "cartFailure",
+   "variant": "25%",
+   "status": "realised"
+  },
+  "actions": [
+   [
+    "flag.write",
+    "on",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "on",
+    true,
+    "25%",
+    "25%"
+   ],
+   [
+    "flag.write",
+    "off",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "off",
+    true,
+    "off",
+    "off"
+   ]
+  ]
+ },
+ "targeted": {
+  "entry": {
+   "flag": "productCatalogFailure",
+   "variant": "on",
+   "status": "realised"
+  },
+  "actions": [
+   [
+    "flag.write",
+    "on",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "on",
+    true,
+    "on",
+    "None"
+   ],
+   [
+    "flag.write",
+    "off",
+    true,
+    null,
+    null
+   ],
+   [
+    "flag.confirm",
+    "off",
+    true,
+    "off",
+    "None"
+   ]
+  ],
+  "served_to_the_targeted_product": [
+   "off",
+   "on",
+   "off"
+  ],
+  "rule_after": [
+   "off",
+   "off"
+  ]
+ },
+ "default_variants_after": {
+  "paymentFailure": "off",
+  "cartFailure": "off"
+ },
+ "served_after": {
+  "paymentFailure": "off",
+  "cartFailure": "off"
+ },
+ "torn_down": true
+}

@@ -1,0 +1,79 @@
+{
+ "window": [
+  1790237610000000000,
+  1790237620000000000
+ ],
+ "frames_selected": 14,
+ "ledger": {
+  "traces": "1 rejected frames failed one by one",
+  "logs": "1 missing frames failed one by one",
+  "metrics": "1 in doubt frames failed one by one"
+ },
+ "frame_checks": {
+  "ingest.rejected:traces/g0/000000#15": [
+   "traces",
+   [
+    1790237598113819500,
+    1790237611196048001
+   ],
+   "HTTP 400"
+  ],
+  "ingest.missing:logs/g0/000000#15": [
+   "logs",
+   [
+    1790237603363490000,
+    1790237611295080778
+   ],
+   "none"
+  ],
+  "ingest.in_doubt:metrics/g0/000000#8": [
+   "metrics",
+   [
+    1790237612266416024,
+    1790237612688421076
+   ],
+   "in doubt"
+  ]
+ },
+ "exclusions": {
+  "rejected": {
+   "frame": "traces/g0/000000#15",
+   "window": [
+    1790237598113819500,
+    1790237611196048001
+   ],
+   "on_its_records": "gate on s: ingest.rejected:traces/g0/000000#15 fail",
+   "before_its_records": null,
+   "other_signal": "gate on s: ingest.missing:logs/g0/000000#15 fail"
+  },
+  "missing": {
+   "frame": "logs/g0/000000#15",
+   "window": [
+    1790237603363490000,
+    1790237611295080778
+   ],
+   "on_its_records": "gate on s: ingest.missing:logs/g0/000000#15 fail",
+   "before_its_records": null,
+   "other_signal": "gate on s: ingest.rejected:traces/g0/000000#15 fail"
+  },
+  "in_doubt": {
+   "frame": "metrics/g0/000000#8",
+   "window": [
+    1790237612266416024,
+    1790237612688421076
+   ],
+   "on_its_records": "gate on s: ingest.in_doubt:metrics/g0/000000#8 fail",
+   "before_its_records": null,
+   "other_signal": null
+  }
+ },
+ "capped_ledger": [
+  "fail",
+  "1 frames rejected: traces/g0/000000#15"
+ ],
+ "legacy_reasons": [
+  "traces: 1 frames rejected: traces/g0/000000#15",
+  "logs: 1 frames without an outcome",
+  "1 frames in doubt (resent after a feeder died): ['metrics/g0/000000#8']"
+ ]
+}

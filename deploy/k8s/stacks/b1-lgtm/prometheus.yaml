@@ -1,0 +1,42 @@
+# B1 Prometheus: compose service `prometheus` on the prometheus-community chart, server only. Its config is
+# stacks/b1-lgtm/config/prometheus.yml byte for byte, from the prometheus-config ConfigMap of release otb-config;
+# the chart renders none, so its scrape configs never apply. Resources and retention size come from the profile.
+rbac:
+  create: false
+
+configmapReload:
+  prometheus:
+    enabled: false
+
+server:
+  fullnameOverride: prometheus
+  image:
+    repository: prom/prometheus
+    tag: v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e
+  configMapOverrideName: config
+  # compose sets only retention.size; Prometheus then keeps data for any time
+  retention: ""
+  extraFlags:
+    - web.enable-otlp-receiver
+    - query.timeout=2m
+  podLabels: {otb.stack: b1-lgtm, otb.role: backend}
+  # compose gates no traffic on readiness: a backend slow to answer /ready under load stays in its Service (5 min)
+  readinessProbePeriodSeconds: 10
+  readinessProbeFailureThreshold: 30
+  service:
+    servicePort: 9090
+  persistentVolume:
+    enabled: true
+
+serviceAccounts:
+  server:
+    create: true
+
+alertmanager:
+  enabled: false
+kube-state-metrics:
+  enabled: false
+prometheus-node-exporter:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false

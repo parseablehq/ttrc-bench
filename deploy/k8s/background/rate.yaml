@@ -1,0 +1,42 @@
+# The rate knobs. A generator's OTLP/JSON bytes at the gateway are its records per second times the JSON bytes per
+# record, measured end to end by tests/e2e/test_background_local.py (gateway raw bytes / records, per signal) and
+# recorded in the otb.bg/json-bytes-per-record annotation. To change the background volume, set mb_per_s and
+# logs_share in the scenario and these values so that
+#   logs:    LOGS_PER_MIN / 60 * bytes_per_record = mb_per_s * logs_share * 1e6
+#   metrics: WORKERS * DATAPOINTS_PER_REQ * 1000 / INTERVAL_MS * bytes_per_record = mb_per_s * (1 - logs_share) * 1e6
+# tests/e2e/test_background_manifests.py checks the two equations against scenarios/tb-hybrid.yaml. CPU per MB/s
+# is in README.md.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otb-bg-loggen
+  namespace: otb-bg
+  annotations:
+    otb.bg/json-bytes-per-record: "1055"
+data:
+  OTEL_ENDPOINT: http://otb-bg-collector:4318
+  FIELD_PROFILE: generic
+  SEED: "20261013"
+  LOGS_PER_MIN: "386500"
+  BATCH_SIZE: "500"
+  WORKERS: "8"
+  DURATION: "0"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otb-bg-loadgen
+  namespace: otb-bg
+  annotations:
+    otb.bg/json-bytes-per-record: "377"
+data:
+  OTEL_ENDPOINT: http://otb-bg-collector:4318
+  FIELD_PROFILE: generic
+  SEED: "20261013"
+  SERVICES: "24"
+  PODS: "240"
+  HOSTS: "12"
+  DATAPOINTS_PER_REQ: "500"
+  WORKERS: "4"
+  INTERVAL_MS: "166"
+  DURATION: "0"

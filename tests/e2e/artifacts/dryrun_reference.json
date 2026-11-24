@@ -1,0 +1,88 @@
+{
+ "schedule_check_f1": {
+  "slot_id": "f1",
+  "status": "realised",
+  "onset_utc": "2026-09-24T08:14:42Z",
+  "offset_utc": "2026-09-24T08:19:05Z",
+  "onset_delay_s": 30.477,
+  "offset_delay_s": -13.664,
+  "signature": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+  "affected_records": 60
+ },
+ "window": [
+  "2026-09-24T07:46:00",
+  "2026-09-24T08:27:00"
+ ],
+ "tasks_mismatch": {},
+ "alternatives_equal": true,
+ "gate_mismatch": {},
+ "tasks_compared": 11,
+ "gate_checks_compared": 8,
+ "gate_values": {
+  "logs.total": 76769,
+  "logs.by_service": {
+   "ad": 467,
+   "cart": 4143,
+   "checkout": 596,
+   "currency": 2410,
+   "email": 140,
+   "frontend": 8822,
+   "frontend-proxy": 35448,
+   "load-generator": 7478,
+   "otelcol-contrib": 58,
+   "payment": 321,
+   "product-catalog": 12096,
+   "quote": 306,
+   "recommendation": 3699,
+   "shipping": 785
+  },
+  "logs.error_by_service": {
+   "frontend": 215,
+   "load-generator": 22,
+   "otelcol-contrib": 22,
+   "recommendation": 44
+  },
+  "spans.total": 222636,
+  "traces.total": 38041,
+  "spans.error_by_service": {
+   "ad": 3,
+   "cart": 1,
+   "checkout": 66,
+   "frontend": 989,
+   "frontend-proxy": 472,
+   "frontend-web": 61,
+   "load-generator": 477,
+   "payment": 43,
+   "product-catalog": 8,
+   "recommendation": 91
+  },
+  "metrics.calls_points": 4713,
+  "metrics.placeorder_error_final": 33
+ },
+ "clean_build": {
+  "segments_total": 10,
+  "segments_built": 10,
+  "rows": {
+   "spans": 222636,
+   "span_events": 222847,
+   "logs": 76769,
+   "points": 490744,
+   "resources": 2111
+  }
+ },
+ "kills_after_built_lines": [
+  1,
+  4,
+  8
+ ],
+ "resumed_build": {
+  "segments_built": 2,
+  "segments_skipped": 8
+ },
+ "rerun_on_clean": {
+  "segments_built": 0,
+  "segments_skipped": 10
+ },
+ "parquet_files": 25,
+ "parquet_identical_after_kills": true
+}

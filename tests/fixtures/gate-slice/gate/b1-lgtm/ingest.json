@@ -1,0 +1,73 @@
+{
+ "arrival_horizon_s": 606,
+ "complete": true,
+ "finished": true,
+ "in_doubt": [],
+ "last_outcome_ns": 1791012133936763000,
+ "late": {
+  "logs": [],
+  "metrics": [],
+  "traces": []
+ },
+ "late_spans": {
+  "logs": [],
+  "metrics": [],
+  "traces": []
+ },
+ "rejected": [],
+ "session": "live-45b-follow-20261003T063606Z",
+ "signals": {
+  "logs": {
+   "complete": true,
+   "frames_expected": 1327,
+   "frames_missing": 0,
+   "frames_ok": 1327,
+   "frames_rejected": 0,
+   "late_bound_s": null,
+   "late_frames": 0,
+   "late_max_s": 8.317,
+   "late_p50_s": 3.102,
+   "late_p99_s": 7.038,
+   "records_expected": 65428,
+   "records_ok": 65428,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  },
+  "metrics": {
+   "complete": true,
+   "frames_expected": 834,
+   "frames_missing": 0,
+   "frames_ok": 834,
+   "frames_rejected": 0,
+   "late_bound_s": 600.0,
+   "late_frames": 0,
+   "late_max_s": 12.932,
+   "late_p50_s": 2.388,
+   "late_p99_s": 7.294,
+   "records_expected": 691875,
+   "records_ok": 691875,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  },
+  "traces": {
+   "complete": true,
+   "frames_expected": 1350,
+   "frames_missing": 0,
+   "frames_ok": 1350,
+   "frames_rejected": 0,
+   "late_bound_s": null,
+   "late_frames": 0,
+   "late_max_s": 14.266,
+   "late_p50_s": 3.106,
+   "late_p99_s": 7.553,
+   "records_expected": 190816,
+   "records_ok": 190816,
+   "refused_records": 0,
+   "retries": 0,
+   "time_strings_left": null
+  }
+ },
+ "stack": "b1-lgtm"
+}

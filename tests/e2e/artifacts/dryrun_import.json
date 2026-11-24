@@ -1,0 +1,88 @@
+{
+ "raw_count": {
+  "logs": {
+   "distinct_lines": 1077,
+   "empty_attr": 0,
+   "flag_attrs": 36,
+   "flag_events": 0,
+   "flag_metric_points": 0,
+   "flag_service_records": 0,
+   "lines": 1077,
+   "null_body": 12,
+   "records": 76769,
+   "records_raw": 76769,
+   "rr_web": 0
+  },
+  "metrics": {
+   "distinct_lines": 704,
+   "empty_attr": 0,
+   "flag_attrs": 0,
+   "flag_events": 0,
+   "flag_metric_points": 222,
+   "flag_service_records": 1542,
+   "lines": 704,
+   "null_body": 0,
+   "records": 490744,
+   "records_raw": 492508,
+   "rr_web": 0
+  },
+  "total_lines": 2859,
+  "traces": {
+   "distinct_lines": 1078,
+   "empty_attr": 0,
+   "flag_attrs": 1876,
+   "flag_events": 11890,
+   "flag_metric_points": 0,
+   "flag_service_records": 21936,
+   "lines": 1078,
+   "null_body": 0,
+   "records": 222636,
+   "records_raw": 244572,
+   "rr_web": 0
+  }
+ },
+ "archive_totals": {
+  "traces": {
+   "segments": 5,
+   "frames": 1078,
+   "records": 222636,
+   "bytes": 17816504
+  },
+  "logs": {
+   "segments": 2,
+   "frames": 1077,
+   "records": 76769,
+   "bytes": 8225065
+  },
+  "metrics": {
+   "segments": 3,
+   "frames": 704,
+   "records": 490744,
+   "bytes": 9690278
+  }
+ },
+ "frames_total": 2859,
+ "corpus_id_first": "0d8dfadd6f312a811cf498815c8aa2443f50a192ff62f90a9fe061c9fd90e195",
+ "corpus_id_second": "0d8dfadd6f312a811cf498815c8aa2443f50a192ff62f90a9fe061c9fd90e195",
+ "corpus_id_after_kills": "0d8dfadd6f312a811cf498815c8aa2443f50a192ff62f90a9fe061c9fd90e195",
+ "kills_at": [
+  [
+   "traces",
+   300
+  ],
+  [
+   "traces",
+   900
+  ],
+  [
+   "logs",
+   500
+  ],
+  [
+   "metrics",
+   350
+  ]
+ ],
+ "verify_full": "full verify ok (0 problems)",
+ "rotate_mb": 4
+}

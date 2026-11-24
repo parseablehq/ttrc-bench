@@ -1,0 +1,11 @@
+# Measured OTLP/JSON rates of one OTel Demo 3.1.0 instance on the laptop (docs/v1/inventory/corpus.md, section 1,
+# "Measured rates"): bytes from measure.log deltas of the 2026-09-24 dry run. Rates between measured user counts
+# are interpolated linearly; rates above the highest measured count are extrapolated and printed as such, because
+# per-instance throughput beyond 25 users was CPU-bound on the laptop and is unmeasured. Traces at 25 users were
+# measured as 9.2 to 10.2 MB/min; the midpoint is used, so the 25-user total is 19.0, not the table's rounded 19.5.
+format: otb-rates/1
+source: docs/v1/inventory/corpus.md#1-how-the-dry-run-corpus-was-captured
+unit: MB/min per instance (10^6 bytes)
+points:
+  - { users: 5, traces: 5.9, logs: 2.1, metrics: 5.6 }
+  - { users: 25, traces: 9.7, logs: 3.6, metrics: 5.7 }

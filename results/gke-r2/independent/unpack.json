@@ -1,0 +1,33 @@
+{
+ "corpus": "/work/corpora/gke-r2-24h",
+ "region": "eu1",
+ "signals": {
+  "traces": {
+   "frames": 43434,
+   "records": 6571384,
+   "kept_frames": 43422,
+   "kept_records": 6571384,
+   "kept_bytes": 7366715174,
+   "dropped_checked": 1,
+   "segments": 144
+  },
+  "logs": {
+   "frames": 321828,
+   "records": 559292687,
+   "kept_frames": 43306,
+   "kept_records": 2248687,
+   "kept_bytes": 2913750028,
+   "dropped_checked": 1655,
+   "segments": 889
+  },
+  "metrics": {
+   "frames": 557154,
+   "records": 1047753954,
+   "kept_frames": 36482,
+   "kept_records": 6409954,
+   "kept_bytes": 2214245911,
+   "dropped_checked": 2794,
+   "segments": 428
+  }
+ }
+}

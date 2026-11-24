@@ -1,0 +1,48 @@
+# Loaded last by the OTel Demo collector (OTEL_COLLECTOR_CONFIG_EXTRAS). Every signal goes to the TTRC-Bench gateway as
+# OTLP/HTTP JSON. The sending queue is on disk and retries never give up, so a gateway restart loses nothing; the
+# gateway drops a retried batch it already stored by body hash.
+#
+# The collector merges config files but replaces arrays, so each pipeline below repeats the demo's own receivers
+# and processors (src/otel-collector/otelcol-config.yml) and appends ours. tests/e2e/test_demo_overlay.py checks it.
+extensions:
+  file_storage/otb:
+    directory: /var/lib/otelcol/otb-queue
+    create_directory: true
+
+exporters:
+  otlp_http/otb:
+    endpoint: ${env:OTB_GATEWAY}
+    encoding: json
+    compression: gzip
+    tls: { insecure: true }
+    sending_queue: { enabled: true, queue_size: 100000, storage: file_storage/otb }
+    retry_on_failure: { enabled: true, max_elapsed_time: 0s }
+
+processors:
+  # Both labels carry the demo instance: cloud.region for queries, service.instance.id so (service, instance) is
+  # unique across instances. The SDKs' per-process instance UUIDs are overwritten on purpose.
+  resource/otb_instance:
+    attributes:
+      - { key: cloud.region, value: "${env:OTB_INSTANCE}", action: upsert }
+      - { key: service.instance.id, value: "${env:OTB_INSTANCE}", action: upsert }
+  # send_batch_max_size bounds one request, and so one archive frame, even when a single incoming export is large.
+  batch/otb:
+    send_batch_size: 2000
+    send_batch_max_size: 4000
+    timeout: 2s
+
+service:
+  extensions: [file_storage/otb]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource_detection, memory_limiter, transform/sanitize_spans, gen_ai_normalizer, transform/redact_sensitive_data, redaction, resource/otb_instance, batch/otb]
+      exporters: [otlp_http/otb, span_metrics]
+    metrics:
+      receivers: [docker_stats, http_check/frontend-proxy, host_metrics, nginx, otlp, redis, postgresql, prometheus/ad, span_metrics]
+      processors: [resource_detection, memory_limiter, resource/otb_instance, batch/otb]
+      exporters: [otlp_http/otb]
+    logs:
+      receivers: [otlp]
+      processors: [resource_detection, memory_limiter, transform/sanitize_logs, resource/otb_instance, batch/otb]
+      exporters: [otlp_http/otb]

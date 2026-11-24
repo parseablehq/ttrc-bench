@@ -1,0 +1,64 @@
+# GKE: the background generators' build fetches otel-benchmark from this git daemon in namespace otb instead of
+# the private GitHub repository, so the cluster holds no GitHub token. deploy/k8s/gke/bg-source.sh fills it from a
+# local clone and prints the URL for `otb capture --background-source`. The build still fetches the pinned commit
+# by hash (deploy/k8s/background/build.yaml), so the served copy cannot change what is built. The golang image is
+# the build's own, pinned in charts.lock.yaml, for its git.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: otb-bg-source
+  namespace: otb
+  labels: { app.kubernetes.io/name: otb-bg-source }
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+    seccompProfile: { type: RuntimeDefault }
+  containers:
+    - name: git
+      image: golang:1.22.12-bookworm@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdece2955af1c23b37ae5d55a253
+      command: [sh, -c]
+      args:
+        - >-
+          export HOME=/srv;
+          until [ -f /srv/ready ]; do sleep 2; done;
+          exec git daemon --reuseaddr --export-all --base-path=/srv --port=9418 --listen=0.0.0.0 /srv/otel-benchmark
+      ports: [{ name: git, containerPort: 9418 }]
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: { drop: [ALL] }
+      resources:
+        requests: { cpu: 250m, memory: 256Mi }
+        limits: { cpu: 250m, memory: 256Mi }
+      volumeMounts: [{ name: srv, mountPath: /srv }]
+  volumes: [{ name: srv, emptyDir: { sizeLimit: 1Gi } }]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-bg-source
+  namespace: otb
+spec:
+  selector: { app.kubernetes.io/name: otb-bg-source }
+  ports: [{ name: git, port: 9418, targetPort: git }]
+---
+# the generated otb-bg policies allow the build 443 only; this opens the source port, as kind's bg-source-policy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gke-bg-source
+  namespace: otb-bg
+spec:
+  podSelector:
+    matchExpressions:
+      - { key: app.kubernetes.io/name, operator: In, values: [otb-bg-loggen, otb-bg-loadgen] }
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: otb } }
+          podSelector: { matchLabels: { app.kubernetes.io/name: otb-bg-source } }
+      ports:
+        - { protocol: TCP, port: 9418 }

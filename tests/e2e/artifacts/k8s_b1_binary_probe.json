@@ -1,0 +1,27 @@
+{
+ "version": "1.5.1",
+ "tools": [
+  "analyze_loki_labels",
+  "check_datasources_health",
+  "diff_tempo_traces",
+  "get_datasource",
+  "get_tempo_trace",
+  "get_tempo_traceql_docs",
+  "list_datasources",
+  "list_loki_label_names",
+  "list_loki_label_values",
+  "list_prometheus_label_names",
+  "list_prometheus_label_values",
+  "list_prometheus_metric_metadata",
+  "list_prometheus_metric_names",
+  "list_tempo_attribute_names",
+  "list_tempo_attribute_values",
+  "query_loki_logs",
+  "query_loki_patterns",
+  "query_loki_stats",
+  "query_prometheus",
+  "query_prometheus_histogram",
+  "query_tempo_metrics",
+  "search_tempo_traces"
+ ]
+}

@@ -1,0 +1,13 @@
+description: Data points of a metric (OTel name) in the window whose point attributes include every `key=value`
+  in attrs, optionally of one service.
+params:
+  window: window
+  metric: str
+  service: str?
+  attrs:
+    type: str_list
+    default: []
+columns:
+- n
+exact_on:
+- metrics.series_points

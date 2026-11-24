@@ -1,0 +1,36 @@
+{
+ "built_from": {
+  "loggen": [
+   "otel-loggen",
+   "4f7163f3046c02e63bc6e742b1393fe3632ee298"
+  ],
+  "loadgen": [
+   "otel-loadgen",
+   "4f7163f3046c02e63bc6e742b1393fe3632ee298"
+  ]
+ },
+ "profiles": [
+  "Fields:        generic profile, 16 services x 3 pods, 31 generated fields",
+  "=== OTEL Metrics Load Generator (generic profile) ==="
+ ],
+ "rejects": {},
+ "sealed": true,
+ "regions": [
+  "bg"
+ ],
+ "instance_ids": [
+  "bg"
+ ],
+ "severities": [
+  "DEBUG",
+  "ERROR",
+  "INFO",
+  "WARN"
+ ],
+ "series_announced": 6240,
+ "series_in_archive": 6240,
+ "rate_within_15pct": {
+  "logs": true,
+  "metrics": true
+ }
+}

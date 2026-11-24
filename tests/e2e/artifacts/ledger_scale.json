@@ -1,0 +1,47 @@
+{
+ "frames": 1200000,
+ "ledger_lines": 2406877,
+ "ledger_mb": 377,
+ "finished": true,
+ "complete": false,
+ "signals": {
+  "traces": {
+   "frames_expected": 400000,
+   "frames_ok": 399666,
+   "frames_rejected": 334,
+   "late_frames": 396
+  },
+  "logs": {
+   "frames_expected": 400000,
+   "frames_ok": 399666,
+   "frames_rejected": 334,
+   "late_frames": 396
+  },
+  "metrics": {
+   "frames_expected": 400000,
+   "frames_ok": 399666,
+   "frames_rejected": 334,
+   "late_frames": 396
+  }
+ },
+ "frame_spans_listed": {
+  "rejected": {
+   "traces": 334,
+   "logs": 334,
+   "metrics": 334
+  },
+  "missing": {
+   "traces": 0,
+   "logs": 0,
+   "metrics": 0
+  },
+  "in_doubt": {
+   "traces": 571,
+   "logs": 835,
+   "metrics": 571
+  }
+ },
+ "arrival_horizon_s": 10,
+ "query_horizon_s": 34,
+ "lists_match_generator": true
+}

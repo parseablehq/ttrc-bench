@@ -1,0 +1,169 @@
+# The runner pod (docs/k8s/DESIGN.md, "Agent and MCP isolation") on public base images, pinned by digest in
+# pins.yaml and deploy/k8s/charts.lock.yaml; nothing is built or pushed. install and runner run the node image
+# (git for the bundle and `otb run register`, npm for B4's MCP server at bootstrap); Python comes from the PVC. The install init container puts the otb
+# checkout (from a git bundle copied onto the PVC), its venv, uv, kubectl, helm and Claude Code on the PVC, each
+# sha256-checked (install.sh, pins.yaml). Only runner holds the API token, the admin secrets and the PVC root.
+# tools and agent mount read-only subPaths of the PVC: the otb package, its venv and the interpreters, and (tools)
+# the vendor MCP server environments; never .otb/secrets, suites, corpora or runs. The three share nothing but
+# the cells emptyDir.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: otb-runner
+  namespace: otb
+  labels: {app: otb-runner}
+spec:
+  replicas: 1
+  serviceName: otb-runner
+  selector:
+    matchLabels: {app: otb-runner}
+  template:
+    metadata:
+      labels: {app: otb-runner}
+    spec:
+      serviceAccountName: otb-runner
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        # The PVC grows to hold corpora; Always would re-chown every file on each start.
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: install
+          image: node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+          command: [sh, /install/install.sh]
+          envFrom:
+            - configMapRef: {name: otb-runner-install}
+          securityContext: &restricted
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+            readOnlyRootFilesystem: true
+          resources:
+            requests: {cpu: "1", memory: 1Gi}
+            limits: {cpu: "1", memory: 1Gi}
+          volumeMounts:
+            - {name: work, mountPath: /work}
+            - {name: install, mountPath: /install, readOnly: true}
+            - {name: tmp-install, mountPath: /tmp}
+      containers:
+        - name: runner
+          image: node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+          command: [sh, -c, exec sleep infinity]
+          workingDir: /work/app
+          env:
+            - {name: PATH, value: /work/app/.venv/bin:/work/tools/bin:/usr/local/bin:/usr/bin:/bin}
+            - {name: UV_PYTHON_INSTALL_DIR, value: /work/tools/python}
+            - {name: UV_CACHE_DIR, value: /work/tools/uv-cache}
+            - {name: UV_PYTHON_DOWNLOADS, value: never}
+            - {name: UV_PYTHON_PREFERENCE, value: only-managed}
+            - {name: UV_LINK_MODE, value: copy}
+            - {name: OTB_RUNTIME, value: k8s}
+            - {name: OTB_ISOLATION, value: split}
+            - {name: OTB_CELLS_DIR, value: /cells}
+            - {name: HOME, value: /work/home}
+            - {name: TMPDIR, value: /tmp}
+            - {name: DISABLE_AUTOUPDATER, value: "1"}
+            - {name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC, value: "1"}
+          envFrom:
+            - secretRef: {name: otb-stack-admin, optional: true}
+          ports:
+            - {name: otlp-http, containerPort: 4318, protocol: TCP}
+          securityContext: *restricted
+          resources:
+            requests: {cpu: "1", memory: 2Gi}
+            limits: {cpu: "1", memory: 2Gi}
+          volumeMounts:
+            - {name: work, mountPath: /work}
+            - {name: cells, mountPath: /cells}
+            - {name: tmp-runner, mountPath: /tmp}
+            - {name: kube-api-access, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+        - name: tools
+          image: node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+          command: [python, -m, otb.run.workers, --role, tools, --cells, /cells, --scratch, /scratch]
+          workingDir: /work/app
+          env:
+            - {name: PATH, value: /work/app/.venv/bin:/work/tools/bin:/usr/local/bin:/usr/bin:/bin}
+            - {name: OTB_SECRETS_DIR, value: /secrets}
+            - {name: TMPDIR, value: /tmp}
+            - {name: HOME, value: /scratch/home}
+          securityContext: *restricted
+          resources:
+            requests: {cpu: 500m, memory: 1Gi}
+            limits: {cpu: 500m, memory: 1Gi}
+          volumeMounts:
+            - {name: cells, mountPath: /cells}
+            - {name: scratch-tools, mountPath: /scratch}
+            - {name: tmp-tools, mountPath: /tmp}
+            - {name: stack-mcp, mountPath: /secrets, readOnly: true}
+            - {name: work, mountPath: /work/tools, subPath: tools, readOnly: true}
+            - {name: work, mountPath: /work/app/otb, subPath: app/otb, readOnly: true}
+            - {name: work, mountPath: /work/app/.venv, subPath: app/.venv, readOnly: true}
+            - {name: work, mountPath: /work/app/servers, subPath: app/servers, readOnly: true}
+            - {name: work, mountPath: /work/app/tests/fixtures, subPath: app/tests/fixtures, readOnly: true}
+            # Only the environments otb bootstrap installs; the rest of .otb holds the admin secrets.
+            - {name: work, mountPath: /work/app/.otb/servers, subPath: app/.otb/servers, readOnly: true}
+            - {name: work, mountPath: /work/app/.otb/bin, subPath: app/.otb/bin, readOnly: true}
+            - {name: work, mountPath: /work/app/.otb/venvs, subPath: app/.otb/venvs, readOnly: true}
+            - {name: work, mountPath: /work/app/.otb/node, subPath: app/.otb/node, readOnly: true}
+        - name: agent
+          image: python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258
+          command: [python, -m, otb.run.workers, --role, agent, --cells, /cells, --scratch, /scratch]
+          workingDir: /work/app
+          env:
+            - {name: PATH, value: /work/app/.venv/bin:/work/tools/bin:/usr/local/bin:/usr/bin:/bin}
+            - {name: OTB_MODEL_KEY_FILE, value: /credentials/api-key}
+            - {name: OTB_CLAUDE_OAUTH_TOKEN_FILE, value: /credentials/oauth-token}
+            - {name: OTB_CLAUDE_CREDENTIALS_FILE, value: /credentials/claude-credentials.json}
+            - {name: TMPDIR, value: /tmp}
+            - {name: HOME, value: /scratch/home}
+            - {name: DISABLE_AUTOUPDATER, value: "1"}
+            - {name: CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC, value: "1"}
+          securityContext: *restricted
+          resources:
+            requests: {cpu: 500m, memory: 1Gi}
+            limits: {cpu: 500m, memory: 1Gi}
+          volumeMounts:
+            - {name: cells, mountPath: /cells}
+            - {name: scratch-agent, mountPath: /scratch}
+            - {name: tmp-agent, mountPath: /tmp}
+            - {name: model-credential, mountPath: /credentials, readOnly: true}
+            - {name: work, mountPath: /work/tools, subPath: tools, readOnly: true}
+            - {name: work, mountPath: /work/app/otb, subPath: app/otb, readOnly: true}
+            - {name: work, mountPath: /work/app/.venv, subPath: app/.venv, readOnly: true}
+      volumes:
+        - {name: cells, emptyDir: {}}
+        - {name: tmp-install, emptyDir: {}}
+        - {name: tmp-runner, emptyDir: {}}
+        - {name: tmp-tools, emptyDir: {}}
+        - {name: tmp-agent, emptyDir: {}}
+        - {name: scratch-tools, emptyDir: {}}
+        - {name: scratch-agent, emptyDir: {}}
+        - name: install
+          configMap: {name: otb-runner-install, items: [{key: install.sh, path: install.sh}]}
+        - name: stack-mcp
+          secret: {secretName: otb-stack-mcp, defaultMode: 0440}
+        - name: model-credential
+          secret: {secretName: otb-model-credential, optional: true, defaultMode: 0440}
+        # What automountServiceAccountToken would add to every container, mounted in runner alone.
+        - name: kube-api-access
+          projected:
+            defaultMode: 0440
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 3600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef: {fieldPath: metadata.namespace}
+  volumeClaimTemplates:
+    - metadata:
+        name: work
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests: {storage: 20Gi}

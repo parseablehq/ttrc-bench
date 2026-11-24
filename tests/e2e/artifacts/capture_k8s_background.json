@@ -1,0 +1,51 @@
+{
+ "order": [
+  "apply",
+  "rollout",
+  "rollout",
+  "rollout",
+  "get",
+  "rollout",
+  "rollout",
+  "delete"
+ ],
+ "applied_kinds": [
+  "ConfigMap/otb-bg-build",
+  "ConfigMap/otb-bg-collector",
+  "ConfigMap/otb-bg-loadgen",
+  "ConfigMap/otb-bg-loggen",
+  "ConfigMap/otb-bg-source",
+  "Deployment/otb-bg-collector",
+  "Deployment/otb-bg-loadgen",
+  "Deployment/otb-bg-loggen",
+  "Namespace/otb-bg",
+  "NetworkPolicy/allow-dns",
+  "NetworkPolicy/collector",
+  "NetworkPolicy/default-deny-egress",
+  "NetworkPolicy/generators",
+  "PersistentVolumeClaim/otb-bg-loadgen-cache",
+  "PersistentVolumeClaim/otb-bg-loggen-cache",
+  "Service/otb-bg-collector"
+ ],
+ "deleted_kinds": [
+  "ConfigMap/otb-bg-build",
+  "ConfigMap/otb-bg-collector",
+  "ConfigMap/otb-bg-loadgen",
+  "ConfigMap/otb-bg-loggen",
+  "ConfigMap/otb-bg-source",
+  "Deployment/otb-bg-collector",
+  "Deployment/otb-bg-loadgen",
+  "Deployment/otb-bg-loggen",
+  "NetworkPolicy/allow-dns",
+  "NetworkPolicy/collector",
+  "NetworkPolicy/default-deny-egress",
+  "NetworkPolicy/generators",
+  "Service/otb-bg-collector"
+ ],
+ "logs_per_min": "13649",
+ "interval_ms": "4712",
+ "stdout": [
+  "otb capture: background up in otb-bg: otb-bg-collector, otb-bg-loadgen, otb-bg-loggen",
+  "otb capture: background removed from otb-bg"
+ ]
+}

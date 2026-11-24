@@ -1,0 +1,24 @@
+{
+ "urls_rewritten": 151,
+ "origins": {
+  "http://127.0.0.1:4381": "http://b1-lgtm-4381.otb-b1.svc.cluster.local:4381",
+  "http://127.0.0.1:13381": "http://b1-lgtm-13381.otb-b1.svc.cluster.local:13381",
+  "http://127.0.0.1:18881": "http://b1-lgtm-18881.otb-b1.svc.cluster.local:18881",
+  "http://127.0.0.1:31090": "http://b1-lgtm-31090.otb-b1.svc.cluster.local:31090",
+  "http://127.0.0.1:31100": "http://b1-lgtm-31100.otb-b1.svc.cluster.local:31100",
+  "http://127.0.0.1:31200": "http://b1-lgtm-31200.otb-b1.svc.cluster.local:31200",
+  "http://127.0.0.1:31300": "http://b1-lgtm-31300.otb-b1.svc.cluster.local:31300",
+  "http://127.0.0.1:4383": "http://b3-clickhouse-4383.otb-b3.svc.cluster.local:4383",
+  "http://127.0.0.1:13383": "http://b3-clickhouse-13383.otb-b3.svc.cluster.local:13383",
+  "http://127.0.0.1:18883": "http://b3-clickhouse-18883.otb-b3.svc.cluster.local:18883",
+  "http://127.0.0.1:33123": "http://b3-clickhouse-33123.otb-b3.svc.cluster.local:33123",
+  "http://127.0.0.1:4384": "http://b4-parseable-4384.otb-b4.svc.cluster.local:4384",
+  "http://127.0.0.1:13384": "http://b4-parseable-13384.otb-b4.svc.cluster.local:13384",
+  "http://127.0.0.1:18884": "http://b4-parseable-18884.otb-b4.svc.cluster.local:18884",
+  "http://127.0.0.1:34800": "http://b4-parseable-34800.otb-b4.svc.cluster.local:34800"
+ },
+ "cluster_session_under_k8s_identical": true,
+ "compose_session_under_k8s_identical": true,
+ "cluster_session_under_compose_identical": true,
+ "foreign_host_refused": "replay: recorded GET http://elsewhere.invalid:1/api/v2/traces/922085dd3d21c54a1bf30994abc80e58, probe asked GET http://127.0.0.1:31200/api/v2/traces/922085dd3d21c54a1bf30994abc80e58"
+}

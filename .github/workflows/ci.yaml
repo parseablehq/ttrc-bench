@@ -1,0 +1,20 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  offline:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.25"
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      # Offline tests only: Docker tests need OTB_DOCKER_TESTS=1, and tests that need the dry-run recording or the
+      # demo checkout skip without them. The clean_tree plugin fails the session if a test changes `git status`.
+      - run: uv run pytest -q
+      - name: tree is clean
+        run: |
+          git status --porcelain
+          test -z "$(git status --porcelain)"

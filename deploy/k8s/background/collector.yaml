@@ -1,0 +1,100 @@
+# Receives the generators' OTLP (protobuf over HTTP), labels every resource as background, and exports OTLP/HTTP
+# JSON to the TTRC-Bench gateway the way the demo's collector does (capture/demo-overlay/otelcol-otb.yml). Background
+# volume is fungible, so the sending queue is in memory: a long gateway outage drops background batches instead of
+# holding them, and `otb scenario bytes` overstates the run by what was dropped (otelcol_exporter_send_failed_*).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otb-bg-collector
+  namespace: otb-bg
+data:
+  config.yaml: |
+    extensions:
+      health_check: { endpoint: "0.0.0.0:13133" }
+    receivers:
+      otlp:
+        protocols:
+          http: { endpoint: "0.0.0.0:4318" }
+    processors:
+      memory_limiter: { check_interval: 1s, limit_percentage: 80, spike_limit_percentage: 20 }
+      # Both labels as the demo collector sets them for an instance; questions filter on the instance, so bg is
+      # never in an answer.
+      resource/otb_bg:
+        attributes:
+          - { key: cloud.region, value: bg, action: upsert }
+          - { key: service.instance.id, value: bg, action: upsert }
+      batch/otb:
+        send_batch_size: 2000
+        send_batch_max_size: 4000
+        timeout: 2s
+    exporters:
+      otlp_http/otb:
+        endpoint: ${env:OTB_GATEWAY}
+        encoding: json
+        compression: gzip
+        timeout: 30s
+        sending_queue: { enabled: true, num_consumers: 4, queue_size: 64 }
+        retry_on_failure: { enabled: true, max_elapsed_time: 300s }
+    service:
+      extensions: [health_check]
+      telemetry:
+        metrics:
+          readers:
+            - pull: { exporter: { prometheus: { host: "0.0.0.0", port: 8888 } } }
+      pipelines:
+        logs: { receivers: [otlp], processors: [memory_limiter, resource/otb_bg, batch/otb], exporters: [otlp_http/otb] }
+        metrics: { receivers: [otlp], processors: [memory_limiter, resource/otb_bg, batch/otb], exporters: [otlp_http/otb] }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otb-bg-collector
+  namespace: otb-bg
+  labels: { app.kubernetes.io/name: otb-bg-collector, otb.role: background }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app.kubernetes.io/name: otb-bg-collector }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: otb-bg-collector, otb.role: background }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: collector
+          image: otel/opentelemetry-collector-contrib:0.161.0@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1
+          args: [--config=/etc/otelcol/config.yaml]
+          env:
+            - { name: OTB_GATEWAY, value: "http://otb-gateway.otb.svc.cluster.local:4318" }
+            - { name: GOMEMLIMIT, value: 820MiB }
+          ports:
+            - { name: otlp-http, containerPort: 4318 }
+            - { name: metrics, containerPort: 8888 }
+          readinessProbe: { httpGet: { path: /, port: 13133 }, periodSeconds: 5 }
+          resources:
+            requests: { cpu: "1", memory: 1Gi }
+            limits: { cpu: "1", memory: 1Gi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          volumeMounts:
+            - { name: config, mountPath: /etc/otelcol, readOnly: true }
+      volumes:
+        - name: config
+          configMap: { name: otb-bg-collector }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-bg-collector
+  namespace: otb-bg
+spec:
+  selector: { app.kubernetes.io/name: otb-bg-collector }
+  ports:
+    - { name: otlp-http, port: 4318, targetPort: otlp-http }
+    - { name: metrics, port: 8888, targetPort: metrics }

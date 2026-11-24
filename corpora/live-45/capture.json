@@ -1,0 +1,10 @@
+{
+  "scenario_sha256": "cdb4eaeb87baf219cc2bf512f71954e529cf0b8d473fdc8d40341adb74080cbc",
+  "seed": 11,
+  "plan_sha256": "6741a04368496dea3629e35d9c398d5cec4e3a819a5337ca8e3d440ca6368b75",
+  "capture_start_ns": 1790972008428213000,
+  "duration_s": 2700,
+  "instances": [
+    "local"
+  ]
+}

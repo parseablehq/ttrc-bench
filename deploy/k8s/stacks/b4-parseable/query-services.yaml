@@ -1,0 +1,49 @@
+# otb's own Services for every backend and ingest port otb queries, with publishNotReadyAddresses: true: a pod
+# whose readiness probe times out under load stays routable, as a compose container that answers slowly stays
+# reachable. The charts' Services (readiness-gated) remain for the charts' own use and for `otb up`'s wait.
+# stack.yaml's k8s.endpoints point here; tests/e2e/test_k8s_lifecycle.py refuses an endpoint elsewhere.
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-parseable
+  namespace: otb-b4
+  labels:
+    otb.stack: b4-parseable
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app: parseable
+    component: standalone
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-ingest-b4
+  namespace: otb-b4
+  labels:
+    otb.stack: b4-parseable
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: ingest-b4
+  ports:
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
+  - name: health
+    port: 13133
+    targetPort: 13133
+    protocol: TCP
+  - name: metrics
+    port: 8888
+    targetPort: 8888
+    protocol: TCP

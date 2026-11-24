@@ -1,0 +1,11 @@
+description: Distinct metric identities (OTel name, unit, type, monotonic) with a data point in the window. Stacks
+  that rename metrics (Prometheus) derive their names from all four.
+params:
+  window: window
+columns:
+- metric
+- unit
+- type
+- monotonic
+exact_on:
+- metrics.names

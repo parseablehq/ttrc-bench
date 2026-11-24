@@ -1,0 +1,67 @@
+format: otb-archive/1
+name: dryrun
+corpus_id: 0d8dfadd6f312a811cf498815c8aa2443f50a192ff62f90a9fe061c9fd90e195
+sealed: true
+created_utc: '2026-10-02T02:55:40Z'
+window:
+  start: 1790235960000000000
+  end: 1790238420000000000
+instances:
+- default
+streams:
+- g0
+source:
+  demo_repo: https://github.com/open-telemetry/opentelemetry-demo
+  demo_commit: dedc0178918e260823323b8d95005a8cb924b007
+  demo_tag: 3.1.0
+  service_images:
+    _all: ghcr.io/open-telemetry/demo:3.0.0-<service> (v2 recorded the tag only, no digests)
+  demo_collector_image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+normaliser:
+  version: n2
+  source_sha256: 2ccacce98708cbadea6eeebf6707032cd633932e8efa02105c709a295d17ea56
+  rules:
+  - 'logs: drop log records of instrumentation scope rum.rr-web'
+  - 'logs: delete a log record attribute whose AnyValue is empty'
+  - 'logs: a missing or empty log body becomes stringValue ""'
+  - 'all: drop every resource whose service.name is flagd or flagd-ui, with its records'
+  - 'traces: drop span events whose name contains feature_flag'
+  - 'metrics: drop metrics whose name contains feature_flag, with their points'
+  - 'all: delete attributes whose key contains feature_flag, on resources, scopes, spans, span events, span links, log records,
+    data points and exemplars'
+normaliser_dropped:
+  rr_web_records: 0
+  empty_attr_deleted: 0
+  empty_body_set: 12
+  flag_service_records: 23478
+  flag_events: 11890
+  flag_metric_points: 222
+  flag_attrs: 1912
+rotate_bytes: 4194304
+scenario_sha256: 945b92c0c00ea82c530f12c9ea9f9f005fbf06e32ad0ecfdb616ed7c33eb23cf
+schedule_sha256: d978a21553db9065f9d91947068966989c9f062ba8a5834716893e7b5d16d060
+totals:
+  traces:
+    segments: 5
+    frames: 1078
+    records: 222636
+    bytes: 17816504
+  logs:
+    segments: 2
+    frames: 1077
+    records: 76769
+    bytes: 8225065
+  metrics:
+    segments: 3
+    frames: 704
+    records: 490744
+    bytes: 9690278
+imported_from:
+  v2_corpus_yaml: corpus/dryrun/corpus.yaml
+  v2_sha256:
+    traces: fa00214c77c46d097fc3be373398daffb8612e1dfa5e64c0173c8a38e1dd9c7c
+    logs: b7be0c1f98230e5e9b7d227477fdddbb10566fb108da59db5d3cbc0cc3cf3685
+    metrics: 5ca92c33b0d9f9a0b6a78ba82f885c85471179de0b0572896bb6655a7b715b2f
+  v2_window_utc:
+  - '2026-09-24T07:46:00'
+  - '2026-09-24T08:27:00'

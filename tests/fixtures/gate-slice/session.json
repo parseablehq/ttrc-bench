@@ -1,0 +1,16 @@
+{
+ "id": "live-45b-follow-20261003T063606Z",
+ "corpus": "corpora/live-45b",
+ "corpus_id": "292b98dee6bcbbe41cf609b64d82b4863b2e4ee63168036ca83fd30635c75a15",
+ "mode": "follow",
+ "shift_s": 0,
+ "lead_s": 60,
+ "window": null,
+ "stacks": [
+  "b1-lgtm",
+  "b3-clickhouse",
+  "b4-parseable"
+ ],
+ "created_utc": "2026-10-03T06:36:06Z",
+ "arrival_horizon_s": null
+}

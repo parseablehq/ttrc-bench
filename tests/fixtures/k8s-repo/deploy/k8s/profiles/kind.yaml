@@ -1,0 +1,7 @@
+# Fixture budgets: one overlay per release name, passed after the release's own values.
+k1-store:
+  resources: {requests: {cpu: "1", memory: 1Gi}, limits: {cpu: "1", memory: 1Gi}}
+k1-ingest:
+  resources: {requests: {cpu: 500m, memory: 256Mi}, limits: {cpu: 500m, memory: 256Mi}}
+k2-ingest:
+  resources: {requests: {cpu: 500m, memory: 256Mi}, limits: {cpu: 500m, memory: 256Mi}}

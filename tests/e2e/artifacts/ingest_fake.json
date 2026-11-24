@@ -1,0 +1,138 @@
+{
+ "counters_restart": {
+  "baseline": {
+   "logs": -204,
+   "metrics": 0,
+   "traces": -434
+  },
+  "first_reading": {
+   "logs": 0,
+   "metrics": 0,
+   "traces": 0
+  },
+  "gate": {
+   "logs": [
+    "pass",
+    204
+   ],
+   "metrics": [
+    "pass",
+    0
+   ],
+   "traces": [
+    "pass",
+    434
+   ]
+  },
+  "gate_family": "pass",
+  "gate_family_with_first_reading_as_baseline": "fail",
+  "last_reading": {
+   "logs": 0,
+   "metrics": 0,
+   "traces": 0
+  },
+  "readings_while_down": 1,
+  "refused_records": {
+   "logs": 102,
+   "metrics": 0,
+   "traces": 217
+  }
+ },
+ "follow_resume_after_seal": {
+  "corpus_id_after_rerun_is_sealed_id": true,
+  "corpus_id_while_unsealed": "unsealed",
+  "done_marker_after_rerun": true,
+  "every_frame_received_once": true,
+  "frames_in_corpus": 5,
+  "rerun_exit_code": 0,
+  "rerun_resumed_same_session": true,
+  "rerun_shift_s": 0
+ },
+ "kill_resume": {
+  "acked_frames_resent": 0,
+  "every_frame_received": true,
+  "in_doubt_equals_in_flight": true,
+  "received_twice_only_in_flight": true,
+  "report_finished": true,
+  "same_shift": true,
+  "second_run_resumed_same_session": true
+ },
+ "replay": {
+  "done_marker": true,
+  "flaky_bodies_equal_shifted": true,
+  "flaky_retries": 3,
+  "frames_selected": 26,
+  "good_bodies_equal_shifted": true,
+  "recording_date_in_raw_bodies": 435,
+  "recording_date_in_sent_bodies": 0,
+  "rejected_frame": "metrics/g0/000000#8",
+  "reports": {
+   "flaky": {
+    "complete": true,
+    "finished": true,
+    "rejected": []
+   },
+   "good": {
+    "complete": true,
+    "finished": true,
+    "rejected": []
+   },
+   "strict": {
+    "complete": false,
+    "finished": true,
+    "rejected": [
+     {
+      "body": "{\"error\":\"fake rejection\"}",
+      "frame": "metrics/g0/000000#8",
+      "http": 400
+     }
+    ]
+   }
+  },
+  "sent_before_due": 0,
+  "shift_whole_minutes": true,
+  "shifted_date_in_sent_bodies": 435,
+  "strict_bodies_equal_shifted_minus_rejected": true,
+  "time_strings_left": {
+   "flaky": 0,
+   "good": 0,
+   "strict": 0
+  }
+ },
+ "retry_and_doubt": {
+  "busy": {
+   "complete": true,
+   "in_doubt": [],
+   "retries": 2
+  },
+  "dropper": {
+   "complete": true,
+   "in_doubt": [
+    "traces/g0/000000#15"
+   ],
+   "retries": 1
+  },
+  "dropper_retry_error": "RemoteDisconnected"
+ },
+ "sigterm_processes": {
+  "done_marker_after_rerun": true,
+  "done_marker_after_stop": false,
+  "every_feeder_stopped": true,
+  "every_frame_received_once": {
+   "a": true,
+   "b": true
+  },
+  "feeder_runs_after_stop": {
+   "a": 1,
+   "b": 1
+  },
+  "one_process_per_stack": true,
+  "open_intents_after_stop": {
+   "a": [],
+   "b": []
+  },
+  "rerun_exit_code": 0,
+  "rerun_resumed": true,
+  "stopped_exit_code": 0
+ }
+}

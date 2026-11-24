@@ -1,0 +1,24 @@
+{
+ "kind": [
+  "b1-lgtm        backend    2.00 CPU    2.50 GiB",
+  "b3-clickhouse  backend    2.00 CPU    2.50 GiB",
+  "b4-parseable   backend    2.00 CPU    2.50 GiB",
+  "b1-lgtm        ingest     0.50 CPU    0.25 GiB",
+  "b3-clickhouse  ingest     0.50 CPU    0.25 GiB",
+  "b4-parseable   ingest     0.50 CPU    0.25 GiB",
+  "b1-lgtm        setup      0.10 CPU    0.06 GiB",
+  "b4-parseable   setup      0.10 CPU    0.06 GiB",
+  "checked 62 objects: ok"
+ ],
+ "gke": [
+  "b1-lgtm        backend    8.00 CPU   32.00 GiB",
+  "b3-clickhouse  backend    8.00 CPU   32.00 GiB",
+  "b4-parseable   backend    8.00 CPU   32.00 GiB",
+  "b1-lgtm        ingest     2.00 CPU    2.00 GiB",
+  "b3-clickhouse  ingest     2.00 CPU    2.00 GiB",
+  "b4-parseable   ingest     2.00 CPU    2.00 GiB",
+  "b1-lgtm        setup      0.10 CPU    0.06 GiB",
+  "b4-parseable   setup      0.10 CPU    0.06 GiB",
+  "checked 62 objects: ok"
+ ]
+}

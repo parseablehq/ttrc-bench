@@ -1,0 +1,53 @@
+{
+ "binaries": {
+  "loadgen": {
+   "commit": "4f7163f3046c02e63bc6e742b1393fe3632ee298",
+   "sha256": "a0822e3a0c1d854838d35dbb72482025ac39453381f86d774f9907a73422ff70"
+  },
+  "loggen": {
+   "commit": "4f7163f3046c02e63bc6e742b1393fe3632ee298",
+   "sha256": "bf8bf0f2cbdf6d4693a58f54a8b51bbd119293addfb339bbfdc81bc8b98c61ff"
+  }
+ },
+ "cores": {
+  "collector": 0.271,
+  "gateway": 0.166,
+  "loadgen": 0.075,
+  "loggen": 0.172
+ },
+ "cores_per_mb_per_s": {
+  "collector": 0.024,
+  "gateway": 0.014,
+  "loadgen (per metrics MB/s)": 0.016,
+  "loggen (per logs MB/s)": 0.025
+ },
+ "docker_stats_cpu_at_midpoint": {
+  "collector": "22.74%",
+  "loadgen": "7.55%",
+  "loggen": "20.82%"
+ },
+ "json_bytes_per_record": {
+  "logs": 1065.6,
+  "metrics": 379.7
+ },
+ "mb_per_s": {
+  "logs": 6.874,
+  "metrics": 4.578,
+  "total": 11.452
+ },
+ "records": {
+  "logs": 916000,
+  "metrics": 1722000
+ },
+ "severity_share": {
+  "DEBUG": 0.02,
+  "ERROR": 0.0598,
+  "INFO": 0.8002,
+  "WARN": 0.12
+ },
+ "target_mb_per_s": {
+  "logs": 6.796,
+  "metrics": 4.542
+ },
+ "window_s": 122.2
+}

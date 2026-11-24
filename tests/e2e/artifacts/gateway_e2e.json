@@ -1,0 +1,44 @@
+{
+ "posted": 232,
+ "acked_200": 232,
+ "gzip_frames": 78,
+ "protobuf": {
+  "status": 415,
+  "names_encoding_json": true
+ },
+ "bad_json_status": 400,
+ "wrong_signal_status": 400,
+ "resent_status": 200,
+ "health_status": "ok",
+ "gateway_exit": 0,
+ "sealed": true,
+ "verify": "full verify ok (0 problems)",
+ "frames": {
+  "traces": 90,
+  "logs": 89,
+  "metrics": 53
+ },
+ "records": {
+  "traces": 24323,
+  "logs": 8394,
+  "metrics": 40712
+ },
+ "fixture_records": {
+  "traces": 24323,
+  "logs": 8394,
+  "metrics": 40712
+ },
+ "bodies_sha_equal": true,
+ "bodies_equal_in_replay_order": true,
+ "segments": 15,
+ "report": {
+  "frames": 232,
+  "records": 73429,
+  "dedupe_hits": 1,
+  "rejects": {
+   "logs 400": 1,
+   "traces 400": 1,
+   "traces 415": 1
+  }
+ }
+}

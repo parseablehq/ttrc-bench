@@ -1,0 +1,65 @@
+format: otb-schedule/1
+scenario_id: dryrun-v2-import
+seed: null
+plan_sha256: null
+capture_start_ns: 1790235988080421377
+entries:
+- slot_id: f1
+  kind: fault
+  status: realised
+  instance: default
+  window:
+    start: 1790237652000000000
+    end: 1790237959000000000
+  flag: paymentFailure
+  variant: 50%
+  fault_class: error_injection
+  root_service: payment
+  actions:
+  - at_ns: 1790237652000000000
+    action: flag.write
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      phase: 'on'
+      variant: 50%
+  - at_ns: 1790237959000000000
+    action: flag.write
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      phase: 'off'
+      variant: 'off'
+unplanned:
+- slot_id: u1
+  kind: decoy
+  status: realised
+  instance: default
+  window:
+    start: 1790237106000000000
+    end: 1790238405493000000
+  decoy_type: load_step
+  target: load-generator
+  actions:
+  - at_ns: 1790237106000000000
+    action: v2.load
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      note: load-generator recreated with 25 Locust users (was 5)
+- slot_id: u2
+  kind: decoy
+  status: realised
+  instance: default
+  window:
+    start: 1790237130000000000
+    end: 1790237340000000000
+  decoy_type: traffic_gap
+  target: load-generator
+  actions:
+  - at_ns: 1790237130000000000
+    action: v2.gap
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      note: 'load-generator restart: 18-51 spans/min and no logs from 08:06 to 08:08. No user traffic, not a fault'

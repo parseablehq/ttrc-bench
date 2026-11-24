@@ -1,0 +1,48 @@
+# gke-pilot: the gke profile (budgets identical, so the per-stack sums are the gke sums) with volumes sized for a
+# capture of a few hours instead of the 1 TB run. For a GKE rehearsal where the 1 TB disks are not wanted.
+budgets:
+  ingest: &ingest {requests: &ingest_r {cpu: "2", memory: 2Gi}, limits: *ingest_r}
+  b1_prometheus: &b1_prometheus {requests: &b1_prometheus_r {cpu: "2", memory: 10Gi}, limits: *b1_prometheus_r}
+  b1_loki: &b1_loki {requests: &b1_loki_r {cpu: "2", memory: 8Gi}, limits: *b1_loki_r}
+  b1_tempo: &b1_tempo {requests: &b1_tempo_r {cpu: "3", memory: 12Gi}, limits: *b1_tempo_r}
+  b1_grafana: &b1_grafana {requests: &b1_grafana_r {cpu: "1", memory: 2Gi}, limits: *b1_grafana_r}
+  b3_clickhouse: &b3_clickhouse {requests: &b3_clickhouse_r {cpu: "8", memory: 32Gi}, limits: *b3_clickhouse_r}
+  b4_parseable: &b4_parseable {requests: &b4_parseable_r {cpu: "8", memory: 32Gi}, limits: *b4_parseable_r}
+
+prometheus:
+  server:
+    resources: *b1_prometheus
+    retentionSize: 50GB
+    persistentVolume: {size: 60Gi}
+loki:
+  singleBinary:
+    resources: *b1_loki
+    persistence: {size: 60Gi}
+tempo:
+  tempo: {resources: *b1_tempo}
+  persistence: {size: 60Gi}
+grafana:
+  resources: *b1_grafana
+  persistence: {size: 10Gi}
+ingest-b1: {resources: *ingest}
+
+clickhouse:
+  resources: *b3_clickhouse
+  maxQueryMemory: "16000000000"
+  spillBytes: "8000000000"
+  persistence: {size: 60Gi}
+ingest-b3: {resources: *ingest}
+
+parseable:
+  parseable:
+    standalone:
+      unified:
+        resources: *b4_parseable
+        env:
+          P_QUERY_MEMORY_LIMIT: "16000000000"
+          P_ACTIX_NUM_WORKERS: "8"
+          P_DATAFUSION_TARGET_PARTITIONS: "8"
+        persistence:
+          data: {size: 60Gi, storageClass: standard-rwo}
+          staging: {size: 30Gi, storageClass: standard-rwo}
+ingest-b4: {resources: *ingest}

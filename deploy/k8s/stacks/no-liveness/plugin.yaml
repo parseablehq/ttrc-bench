@@ -1,0 +1,10 @@
+# A helm post-renderer plugin (helm 4 takes post-renderers as plugins, not paths). `otb bootstrap --runtime k8s`
+# installs it from this directory; the k8s runtime passes `--post-renderer no-liveness` to every chart release.
+apiVersion: v1
+name: no-liveness
+type: postrenderer/v1
+runtime: subprocess
+version: 0.1.0
+runtimeConfig:
+  platformCommand:
+    - command: ${HELM_PLUGIN_DIR}/no_liveness.py

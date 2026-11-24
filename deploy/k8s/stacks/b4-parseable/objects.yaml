@@ -1,0 +1,87 @@
+# B4 objects no chart creates: the `parseable` Service collector.yaml addresses (compose's service name and port),
+# and a Job that copies the admin credentials into the Secret layout the Parseable chart requires. The Job's
+# script is parseable_env.py, in the parseable-env-script ConfigMap that generate.py writes into configmaps.yaml.
+apiVersion: v1
+kind: Service
+metadata:
+  name: parseable
+  labels: {otb.stack: b4-parseable}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: parseable
+    app.kubernetes.io/instance: parseable
+    app.parseable.com/type: standalone
+  ports:
+    - {name: http, port: 8000, targetPort: 8000}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: parseable-env
+  labels: {otb.stack: b4-parseable}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: parseable-env
+  labels: {otb.stack: b4-parseable}
+rules:
+  - {apiGroups: [""], resources: [secrets], resourceNames: [otb-credentials, otb-b4-store], verbs: [get]}
+  - {apiGroups: [""], resources: [secrets], resourceNames: [parseable-env], verbs: [get, update]}
+  - {apiGroups: [""], resources: [secrets], verbs: [create]}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: parseable-env
+  labels: {otb.stack: b4-parseable}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: parseable-env}
+subjects:
+  - {kind: ServiceAccount, name: parseable-env}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parseable-env
+  labels: {otb.stack: b4-parseable, otb.role: setup}
+spec:
+  backoffLimit: 6
+  activeDeadlineSeconds: 600
+  # a finished Job is deleted, so the next `up` (an apply) runs it again, also after a failure
+  ttlSecondsAfterFinished: 120
+  template:
+    metadata:
+      labels: {otb.stack: b4-parseable, otb.role: setup}
+    spec:
+      serviceAccountName: parseable-env
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: copy
+          image: python:3.13.16-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
+          command: [python3, /job/parseable_env.py]
+          env:
+            - {name: SOURCE_SECRET, value: otb-credentials}
+            - {name: TARGET_SECRET, value: parseable-env}
+            - {name: USERNAME_KEY, value: B4_PARSEABLE_USERNAME}
+            - {name: PASSWORD_KEY, value: B4_PARSEABLE_PASSWORD}
+            - {name: P_ADDR, value: "0.0.0.0:8000"}
+            # optional: an object store's keys (gcs.url, gcs.bucket on gke), merged in when the Secret exists
+            - {name: STORE_SECRET, value: otb-b4-store}
+          resources:
+            requests: {cpu: 100m, memory: 64Mi}
+            limits: {cpu: 100m, memory: 64Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          volumeMounts:
+            - {name: job, mountPath: /job, readOnly: true}
+      volumes:
+        - name: job
+          configMap: {name: parseable-env-script}

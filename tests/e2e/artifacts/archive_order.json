@@ -1,0 +1,12 @@
+{
+ "frames_source": 232,
+ "frames_merged": 232,
+ "distinct_refs": 232,
+ "segments": 20,
+ "storage_order_inversions": 35,
+ "merged_inversions": 0,
+ "merged_is_sorted": true,
+ "segments_jsonl_differ": true,
+ "corpus_id_a": "4d40e63870db45fec3765ea3c4552bd8ddbc7005c1250cc82adc01d24ef67a1b",
+ "corpus_id_b": "4d40e63870db45fec3765ea3c4552bd8ddbc7005c1250cc82adc01d24ef67a1b"
+}

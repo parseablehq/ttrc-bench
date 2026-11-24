@@ -1,0 +1,12 @@
+description: Services with at least min_points data points of a metric (matching the point attributes) in the window.
+params:
+  window: window
+  metric: str
+  attrs:
+    type: str_list
+    default: []
+  min_points:
+    type: int
+    default: 1
+columns: [service, n]
+exact_on: [metrics.series_points]

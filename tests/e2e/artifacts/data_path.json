@@ -1,0 +1,108 @@
+{
+ "checkout_error_spans": {
+  "first_ns": 1790237679739206793,
+  "last_ns": 1790237747385837641,
+  "n": 10
+ },
+ "frames": {
+  "logs": 89,
+  "metrics": 53,
+  "traces": 90
+ },
+ "logs.by_service": {
+  "ad": 47,
+  "cart": 464,
+  "checkout": 73,
+  "currency": 242,
+  "email": 17,
+  "frontend": 959,
+  "frontend-proxy": 3781,
+  "load-generator": 890,
+  "otelcol-contrib": 1,
+  "payment": 44,
+  "product-catalog": 1343,
+  "quote": 25,
+  "recommendation": 420,
+  "shipping": 68
+ },
+ "logs.error_by_service": {
+  "otelcol-contrib": 1
+ },
+ "logs.total": 8374,
+ "metrics.calls_points": 411,
+ "metrics.placeorder_error_final": 6,
+ "payment_rejections": {
+  "first_ns": 1790237682483000000,
+  "last_ns": 1790237747388000000,
+  "n": 5
+ },
+ "placeorder_failures": 5,
+ "placeorder_same_cause": 5,
+ "proxy_5xx_by_path": {
+  "/api/checkout": 8,
+  "/api/recommendations": 2
+ },
+ "records": {
+  "logs": 8394,
+  "metrics": 40712,
+  "traces": 24323
+ },
+ "rows": {
+  "logs": 8394,
+  "points": 40712,
+  "resources": 629,
+  "span_events": 23371,
+  "spans": 24323
+ },
+ "schedule_check": {
+  "affected_records": 15,
+  "offset_ns": 1790237747388000000,
+  "onset_ns": 1790237682477000000,
+  "signature": "Payment request failed. Invalid token. demo.user_context.loyalty_level=gold",
+  "status": "realised"
+ },
+ "schedule_equal_fixture": true,
+ "segment_bytes_equal_fixture": true,
+ "services_with_logs": [
+  "ad",
+  "cart",
+  "checkout",
+  "currency",
+  "email",
+  "frontend",
+  "frontend-proxy",
+  "load-generator",
+  "otelcol-contrib",
+  "payment",
+  "product-catalog",
+  "quote",
+  "recommendation",
+  "shipping"
+ ],
+ "services_with_traces": [
+  "ad",
+  "cart",
+  "checkout",
+  "currency",
+  "email",
+  "frontend",
+  "frontend-proxy",
+  "frontend-web",
+  "image-provider",
+  "load-generator",
+  "payment",
+  "product-catalog",
+  "recommendation",
+  "shipping",
+  "telemetry-docs"
+ ],
+ "spans.error_by_service": {
+  "checkout": 10,
+  "frontend": 10,
+  "frontend-proxy": 14,
+  "load-generator": 48,
+  "payment": 10
+ },
+ "spans.total": 23888,
+ "traces.total": 4051
+}

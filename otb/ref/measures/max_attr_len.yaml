@@ -1,0 +1,9 @@
+description: 'Longest attribute value (characters) per signal in the window: spans, log records and metric points,
+  record attributes only. Discloses truncation by a stack.'
+params:
+  window: window
+columns:
+- signal
+- n
+exact_on:
+- ingest.max_attr_len

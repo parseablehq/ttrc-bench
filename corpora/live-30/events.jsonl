@@ -1,0 +1,7 @@
+{"at_ns":1791192593138135000,"slot_id":"load0","instance":"local","action":"load.set","phase":"on","ok":true,"final":true,"detail":{"http":"200","users":"8","via":"locust /swarm"}}
+{"at_ns":1791193218191975000,"slot_id":"f1","instance":"local","action":"flag.write","phase":"on","ok":true,"final":false,"detail":{"http":"200","via":"flagd-ui","body":"{}","flag":"paymentFailure","variant":"90%"}}
+{"at_ns":1791193218734803000,"slot_id":"f1","instance":"local","action":"flag.confirm","phase":"on","ok":true,"final":true,"detail":{"flag":"paymentFailure","variant":"90%","readback":"90%","served":"90%","confirm_s":"0.542"}}
+{"at_ns":1791193559199388000,"slot_id":"f1","instance":"local","action":"flag.write","phase":"off","ok":true,"final":false,"detail":{"http":"200","via":"flagd-ui","body":"{}","flag":"paymentFailure","variant":"off"}}
+{"at_ns":1791193559669130000,"slot_id":"f1","instance":"local","action":"flag.confirm","phase":"off","ok":true,"final":true,"detail":{"flag":"paymentFailure","variant":"off","readback":"off","served":"off","confirm_s":"0.469"}}
+{"at_ns":1791194013591357000,"slot_id":"d1","instance":"local","action":"decoy.traffic_gap","phase":"on","ok":true,"final":true,"detail":{"http":"200","via":"locust /stop"}}
+{"at_ns":1791194158278723000,"slot_id":"d1","instance":"local","action":"decoy.traffic_gap","phase":"off","ok":true,"final":true,"detail":{"http":"200","users":"8","via":"locust /swarm"}}

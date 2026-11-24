@@ -1,0 +1,57 @@
+format: otb-archive/1
+name: live-smoke
+corpus_id: 60bd7b471ef88924f4427153936190d3be74f394889029ea9a980638ed2ba64a
+sealed: true
+created_utc: '2026-10-02T09:45:57Z'
+window:
+  start: 1790933340000000000
+  end: 1790934360000000000
+instances:
+- local
+streams:
+- g0
+source:
+  demo_repo: https://github.com/open-telemetry/opentelemetry-demo
+  demo_commit: unrecorded (pass --source)
+  demo_tag: unrecorded (pass --source)
+  service_images: {}
+  demo_collector_image: unrecorded (pass --source)
+normaliser:
+  version: n2
+  source_sha256: 2ccacce98708cbadea6eeebf6707032cd633932e8efa02105c709a295d17ea56
+  rules:
+  - 'logs: drop log records of instrumentation scope rum.rr-web'
+  - 'logs: delete a log record attribute whose AnyValue is empty'
+  - 'logs: a missing or empty log body becomes stringValue ""'
+  - 'all: drop every resource whose service.name is flagd or flagd-ui, with its records'
+  - 'traces: drop span events whose name contains feature_flag'
+  - 'metrics: drop metrics whose name contains feature_flag, with their points'
+  - 'all: delete attributes whose key contains feature_flag, on resources, scopes, spans, span events, span links, log records,
+    data points and exemplars'
+normaliser_dropped:
+  rr_web_records: 0
+  empty_attr_deleted: 0
+  empty_body_set: 4
+  flag_service_records: 8888
+  flag_events: 3456
+  flag_metric_points: 101
+  flag_attrs: 574
+rotate_bytes: 67108864
+scenario_sha256: f9420f7309e5debcf11d0aa7786f944958dbf33999b5018359e50dc73335b115
+schedule_sha256: 021f69f70e7307dce3e441d66c8e8d9d8b24ed08443880f63a5b031de6bceb67
+totals:
+  traces:
+    segments: 2
+    frames: 478
+    records: 68662
+    bytes: 6003832
+  logs:
+    segments: 2
+    frames: 476
+    records: 22955
+    bytes: 2818636
+  metrics:
+    segments: 2
+    frames: 275
+    records: 243654
+    bytes: 4556204

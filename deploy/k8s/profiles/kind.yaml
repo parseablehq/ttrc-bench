@@ -1,0 +1,50 @@
+# kind: profiles/laptop.env on Kubernetes. Every stack gets 2 CPU / 2.5 GiB across its backend pods and the same
+# 0.5 CPU / 256 MiB ingest collector; requests equal limits on every container (Guaranteed QoS).
+# Release name -> Helm values passed after the release's own values file. `clickhouse` is a manifests release:
+# deploy/k8s/stacks/generate.py writes its entry into clickhouse-kind.yaml. `budgets` only holds the anchors.
+budgets:
+  ingest: &ingest {requests: &ingest_r {cpu: 500m, memory: 256Mi}, limits: *ingest_r}
+  b1_prometheus: &b1_prometheus {requests: &b1_prometheus_r {cpu: 500m, memory: 640Mi}, limits: *b1_prometheus_r}
+  b1_loki: &b1_loki {requests: &b1_loki_r {cpu: 500m, memory: 640Mi}, limits: *b1_loki_r}
+  b1_tempo: &b1_tempo {requests: &b1_tempo_r {cpu: 500m, memory: 768Mi}, limits: *b1_tempo_r}
+  b1_grafana: &b1_grafana {requests: &b1_grafana_r {cpu: 500m, memory: 512Mi}, limits: *b1_grafana_r}
+  b3_clickhouse: &b3_clickhouse {requests: &b3_clickhouse_r {cpu: "2", memory: 2560Mi}, limits: *b3_clickhouse_r}
+  b4_parseable: &b4_parseable {requests: &b4_parseable_r {cpu: "2", memory: 2560Mi}, limits: *b4_parseable_r}
+
+prometheus:
+  server:
+    resources: *b1_prometheus
+    retentionSize: 8GB
+    persistentVolume: {size: 10Gi}
+loki:
+  singleBinary:
+    resources: *b1_loki
+    persistence: {size: 10Gi}
+tempo:
+  tempo: {resources: *b1_tempo}
+  persistence: {size: 10Gi}
+grafana:
+  resources: *b1_grafana
+  persistence: {size: 1Gi}
+ingest-b1: {resources: *ingest}
+
+clickhouse:
+  resources: *b3_clickhouse
+  maxQueryMemory: "1000000000"
+  spillBytes: "500000000"
+  persistence: {size: 20Gi}
+ingest-b3: {resources: *ingest}
+
+parseable:
+  parseable:
+    standalone:
+      unified:
+        resources: *b4_parseable
+        env:
+          P_QUERY_MEMORY_LIMIT: "1000000000"
+          P_ACTIX_NUM_WORKERS: "4"
+          P_DATAFUSION_TARGET_PARTITIONS: "4"
+        persistence:
+          data: {size: 20Gi, storageClass: standard}
+          staging: {size: 5Gi, storageClass: standard}
+ingest-b4: {resources: *ingest}

@@ -1,0 +1,7 @@
+{
+ "corpus_id": "fixture",
+ "id": "session-smoke",
+ "mode": "fixture",
+ "shift_s": 0,
+ "window": null
+}

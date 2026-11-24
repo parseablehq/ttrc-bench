@@ -1,0 +1,82 @@
+# Every chart and image the stack releases render. `otb bootstrap --runtime k8s` pulls
+# each chart (keyed as stack.yaml names it) into .otb/charts/<chart>-<version>.tgz and refuse an archive whose
+# sha256 differs. tests/k8s/check_rendered.py refuses a rendered image not listed here, or one whose repository a
+# stack's compose.yaml runs at another digest.
+charts:
+  prometheus-community/prometheus:
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 29.36.1
+    app_version: v3.15.0
+    sha256: 8492d3a0e99f99a12bb389f1c83f3636e3fc5d68f995a09e815044773246217e
+  grafana-community/loki:
+    repo: https://grafana-community.github.io/helm-charts
+    version: 18.15.1
+    app_version: 3.7.8
+    sha256: bfa767447d2ebcae3f0a24836b1a0813104a32fcf8a2eabae5461f6d79edbe0a
+  grafana-community/tempo:
+    repo: https://grafana-community.github.io/helm-charts
+    version: 3.1.0
+    app_version: 3.1.0
+    sha256: cbc39dcd0f63ec244d4fea1c346dbecdd099ca8b0a9272240400ad0a91f8cc09
+  grafana-community/grafana:
+    repo: https://grafana-community.github.io/helm-charts
+    version: 13.5.1
+    app_version: 13.2.4  # the chart's default; the release runs 13.2.3, compose's image
+    sha256: 125148115ed39a120850df1d82d0b9b7e1dcd458a0e4f9caa72521fd9cd9ca42
+  parseable/parseable:
+    repo: https://charts.parseable.com
+    version: 3.2.4
+    app_version: v3.2.3  # the chart's default; the release runs v3.2.6, compose's image
+    sha256: 02e96d14ca94b55cacb8d30964ee42bf58b3c3add4ecaf571838463c95d8cbdf
+  # the OpenTelemetry Demo, one release per instance (deploy/k8s/demo/, unit W3)
+  open-telemetry/opentelemetry-demo:
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    version: 0.42.3
+    app_version: 3.1.0
+    sha256: 3c16f3549ea86a85145d7b8db507fe171417d95ebbaf52a9d7f1b668d694ad62
+  open-telemetry/opentelemetry-collector:
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    version: 0.175.1
+    app_version: 0.161.0
+    sha256: 33996399f5d831193603f8a56ed46b7cd3f012eeb6df4d5046c5b560a554e21d
+
+images:
+  - prom/prometheus:v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e
+  - grafana/loki:3.7.8@sha256:1107dd5274e0ada47e42472b7a7e71f3b2a2fe878878108f3e2f9e51528f0193
+  - grafana/tempo:3.1.0@sha256:3076b8dcdfb32fd6bc5ccef85e7b7313e6199b9cb84366257fc17ecb696db5fd
+  - grafana/grafana:13.2.3@sha256:b28bae15e219c998fb0e0424ed724930cc61b1f61fb404d47c862f9a23f9e572
+  - otel/opentelemetry-collector-contrib:0.161.0@sha256:fd328de2552466ad78385e1b1289c3f2402b1c45f265b252aab1955b42845ac1
+  - clickhouse/clickhouse-server:26.8.15.10@sha256:9716a352d25f538bd19d868b001141e7a60e4d035bc9b823658c6a071660aa61
+  - quay.io/parseablehq/parseable:v3.2.6@sha256:43e07b06f983e43b50eedce39f49998b6b8202803028cbba9ca7f92550a90596
+  # the Grafana token Job (setup role): no image in compose, where otb provisions the token from the host
+  - python:3.13.16-alpine@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
+  # the OpenTelemetry Demo release (deploy/k8s/demo/values.yaml): compose capture's service images and collector
+  - ghcr.io/open-telemetry/demo:latest-ad@sha256:a627c85d919c28fe6279534c1c7bcc04941e0a981cca53f0ef8f59fa28a7fa59
+  - ghcr.io/open-telemetry/demo:latest-cart@sha256:1f74a6f951f2fc819e8936b3ca52ecb725ddd2043e808e1075c02b197869b08b
+  - ghcr.io/open-telemetry/demo:latest-checkout@sha256:6803df8c2a128bde1e4188d1f3234ef6b27e47d08b06ba0c28a073a9be0a4856
+  - ghcr.io/open-telemetry/demo:latest-currency@sha256:a1542f8f40f5c6eeacb85f2f5e91ed43f71bf26670d575e137fd3a6e705fc2f7
+  - ghcr.io/open-telemetry/demo:latest-email@sha256:a882adabf4a5bf2e3108909f41e030aa4fad0684647eaee1754d3243ca9dce37
+  - ghcr.io/open-telemetry/demo:latest-flagd-ui@sha256:a4386d67549e5124369c44d08d056be8aba38003203c4fe6fa9519d1b4e33bbc
+  - ghcr.io/open-telemetry/demo:latest-frontend@sha256:e75ad3c5c75c2b1cf83e495502eedc62a091ea5bea58503afdb8c7eaa9710c90
+  - ghcr.io/open-telemetry/demo:latest-frontend-proxy@sha256:89f6ae9f3d39b179087dacd28d2e1a0dae3f231f858c3c7214b8fae9dc98d1dd
+  - ghcr.io/open-telemetry/demo:latest-image-provider@sha256:8b78adc52028f867baaae4d2f0cf5466a79b2a31f93a01fc2e2d7d9ee246a814
+  - ghcr.io/open-telemetry/demo:latest-load-generator@sha256:8ad98c2b008522fe34dcf0b421ff4906fecad296613786c6421e019004673ccc
+  - ghcr.io/open-telemetry/demo:latest-payment@sha256:7552e1fe559e4d740bd2ffae5fb63b5db51be2a3d2e1db9f08553c10bd001024
+  - ghcr.io/open-telemetry/demo:latest-product-catalog@sha256:9a7398db29925d33daafa454685110f5217514adfe0930da8eea1fd16221d860
+  - ghcr.io/open-telemetry/demo:latest-quote@sha256:0e82843cf7edf7e9d00faac5fcda6202ef21e0f23aa6f95076738a6d1fb0ebc8
+  - ghcr.io/open-telemetry/demo:latest-recommendation@sha256:c383035e0b3e7e077be8e8ed3470cdd94490f081deb45b17af0bac3124d26090
+  - ghcr.io/open-telemetry/demo:latest-shipping@sha256:2aad4d6786a651519eeaf0f46cb97b9f8d6f6125c176bd0d8ce4ffd463dab7f7
+  - ghcr.io/open-telemetry/demo:latest-telemetry-docs@sha256:47b84fb723a4e811f2a0c0d81049ef96c3591a35cef70811c40c8ba1ea028f23
+  - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.159.0@sha256:1f2c54a30e713fac6b3ae77a1ec84010c2007e29ced8ec666214fc2f6739c1cc
+  - ghcr.io/open-feature/flagd:v0.16.0@sha256:32234e63c1d0634883aabd31cbd46802934aaaef0153dfd653b5d1017940bb4e
+  - ghcr.io/valkey-io/valkey:9.0.4-alpine3.23@sha256:107b203169a20ef7c87548c157f4e4a833dbbbd20fefd3a26740b7f98ac80216
+  - postgres:18.4@sha256:a02db8cac496f15b094798a38254f14d6e00741f709360e5e00bb6668ea31636
+  - busybox:1.37.0@sha256:bdf57e528e45e4433820e045b29b4597825a1c9e38353532d90a01445013f82e
+  # the runner pod (deploy/k8s/runner/pins.yaml): install and runner (git, npm), tools, agent and the otb-fx fixture
+  - node:22-bookworm@sha256:0e5f906573693feaa1e21057ebdcfdb5bd5021f050b2dc7c9deceb629c7da2a8
+  - node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+  - python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258
+  # the background generators (deploy/k8s/background/): the build init container and the runtime image; their
+  # collector runs otel/opentelemetry-collector-contrib:0.161.0 above
+  - golang:1.22.12-bookworm@sha256:3d699e4d15d0f8f13c9195c0632a16702b8cbdece2955af1c23b37ae5d55a253
+  - gcr.io/distroless/static-debian12:nonroot@sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab

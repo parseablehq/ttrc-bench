@@ -1,0 +1,41 @@
+{
+ "supervisor_exit": 0,
+ "first_kill_while_live": true,
+ "second_kill_after_seal": true,
+ "ingest_starts": 3,
+ "capture_starts": 1,
+ "ingest_exits": [
+  [
+   "137",
+   "restarting in 1 s"
+  ],
+  [
+   "137",
+   "restarting in 2 s"
+  ],
+  [
+   "0",
+   "the corpus is sealed"
+  ]
+ ],
+ "capture_exit": [
+  [
+   "0",
+   "the corpus is sealed"
+  ]
+ ],
+ "noise_lines": [],
+ "runs_resumed": [
+  false,
+  true,
+  true
+ ],
+ "one_session": true,
+ "session_took_sealed_corpus_id": true,
+ "done_marker": true,
+ "frames_archived": 232,
+ "frames_with_an_outcome": 232,
+ "acked_frames_resent": 0,
+ "distinct_bodies_received": 232,
+ "bodies_not_archived": []
+}

@@ -1,0 +1,12 @@
+description: 'Self time per service under one entry operation, window against baseline. Requests are the outermost
+  SERVER spans of entry_service named entry_op. A span''s self time is its duration minus the summed durations of
+  its children, floored at 0; a request''s self time in a service is the sum over its subtree''s spans of that
+  service. median_ms is the lower median (quantile_disc 0.5) over requests in the window, base_median_ms over the
+  baseline, delta_ms their difference; ms rounded to 3 decimals.'
+params:
+  window: window
+  baseline: window
+  entry_service: str
+  entry_op: str
+columns: [service, median_ms, base_median_ms, delta_ms]
+exact_on: []

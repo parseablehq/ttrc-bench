@@ -1,0 +1,33 @@
+format: otb-schedule/1
+scenario_id: dryrun-v2-import
+seed: null
+plan_sha256: null
+capture_start_ns: 1790237351376097816
+entries:
+- slot_id: f1
+  kind: fault
+  status: realised
+  instance: default
+  window:
+    start: 1790237652000000000
+    end: 1790237959000000000
+  flag: paymentFailure
+  variant: 50%
+  fault_class: error_injection
+  root_service: payment
+  actions:
+  - at_ns: 1790237652000000000
+    action: flag.write
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      phase: 'on'
+      variant: 50%
+  - at_ns: 1790237959000000000
+    action: flag.write
+    ok: true
+    detail:
+      source: corpus.yaml events (v2 measure.log)
+      phase: 'off'
+      variant: 'off'
+unplanned: []

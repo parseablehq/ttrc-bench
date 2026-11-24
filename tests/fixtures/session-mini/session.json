@@ -1,0 +1,7 @@
+{
+ "corpus_id": "fixture",
+ "id": "session-mini",
+ "mode": "fixture",
+ "shift_s": 3600,
+ "window": null
+}

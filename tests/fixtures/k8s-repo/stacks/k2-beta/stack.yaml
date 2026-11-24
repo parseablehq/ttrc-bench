@@ -1,0 +1,53 @@
+id: k2-beta
+label: "K2 fixture beta"
+family: unified-lake
+compose_file: compose.yaml
+
+ingest:
+  service: ingest-k2
+  url: http://127.0.0.1:4392
+  health_url: http://127.0.0.1:13392/
+  metrics_url: http://127.0.0.1:18892/metrics
+  paths: {traces: /v1/traces, logs: /v1/logs, metrics: /v1/metrics}
+  max_inflight: 1
+
+collector:
+  config: collector.yaml
+  processors: {}
+
+urls:
+  store: http://127.0.0.1:39200
+
+arrival_time_sensitive: true
+max_late_s: {traces: null, logs: null, metrics: null}
+settle_s: 0
+
+credentials:
+  - {name: K2_TOKEN, kind: password}
+
+post_up: []
+
+readiness:
+  - {name: store, url: "http://127.0.0.1:__PORT__/k2/compose/ready"}
+
+mcp:
+  kind: http
+  url: "http://127.0.0.1:39200/mcp"
+  headers: {Authorization: "Bearer ${K2_TOKEN}"}
+  pin: "fx/store-mcp:1.0.0@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+k8s:
+  namespace: otb-k2
+  releases:
+    - {name: k2-store, manifests: ["deploy/k8s/stacks/k2-beta/store-{profile}.yaml"]}
+    - {name: k2-ingest, chart: fx/collector, version: 0.1.0, values: deploy/k8s/stacks/k2-beta/ingest.yaml}
+  endpoints:
+    ingest.url: http://ingest-k2.otb-k2.svc.cluster.local:4318
+    ingest.health_url: http://ingest-k2.otb-k2.svc.cluster.local:13133/
+    ingest.metrics_url: http://ingest-k2.otb-k2.svc.cluster.local:8888/metrics
+    urls.store: http://store.otb-k2.svc.cluster.local:9200
+    readiness.store: http://127.0.0.1:__PORT__/k2/k8s/ready
+    mcp.url: http://store.otb-k2.svc.cluster.local:9200/mcp
+
+phase: {}
+disclosures: ["Fixture stack; not a system under test."]

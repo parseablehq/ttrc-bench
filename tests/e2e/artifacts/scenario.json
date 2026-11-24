@@ -1,0 +1,31 @@
+{
+ "catalogue_check": "catalogue matches tests/fixtures/flagd/demo.flagd.json",
+ "smoke_seed7_sha256": "01b786ddcc4984f2871f6773482ef7c529fbce94892928dbb66e92b8d11a403e",
+ "smoke_same_seed_identical": true,
+ "smoke_other_seed_differs": true,
+ "smoke_seed7": {
+  "load0": [
+   null,
+   null,
+   0,
+   0
+  ],
+  "f1": [
+   "cartFailure",
+   "50%",
+   246,
+   476
+  ],
+  "d1": [
+   null,
+   null,
+   646,
+   766
+  ]
+ },
+ "week_same_seed_identical": true,
+ "week_other_seed_differs": true,
+ "week_min_gap_respected": true,
+ "week_overlap_group_overlaps": true,
+ "week_expected_total": "expected OTLP/JSON total: 1054.9 GB (1.055 TB)"
+}

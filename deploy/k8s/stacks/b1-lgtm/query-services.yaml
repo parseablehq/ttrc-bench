@@ -1,0 +1,106 @@
+# otb's own Services for every backend and ingest port otb queries, with publishNotReadyAddresses: true: a pod
+# whose readiness probe times out under load stays routable, as a compose container that answers slowly stays
+# reachable. The charts' Services (readiness-gated) remain for the charts' own use and for `otb up`'s wait.
+# stack.yaml's k8s.endpoints point here; tests/e2e/test_k8s_lifecycle.py refuses an endpoint elsewhere.
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-prometheus
+  namespace: otb-b1
+  labels:
+    otb.stack: b1-lgtm
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: server
+  ports:
+  - name: http
+    port: 9090
+    targetPort: 9090
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-loki
+  namespace: otb-b1
+  labels:
+    otb.stack: b1-lgtm
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/component: single-binary
+  ports:
+  - name: http
+    port: 3100
+    targetPort: 3100
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-tempo
+  namespace: otb-b1
+  labels:
+    otb.stack: b1-lgtm
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+  ports:
+  - name: http
+    port: 3200
+    targetPort: 3200
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-grafana
+  namespace: otb-b1
+  labels:
+    otb.stack: b1-lgtm
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otb-q-ingest-b1
+  namespace: otb-b1
+  labels:
+    otb.stack: b1-lgtm
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: ingest-b1
+  ports:
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
+  - name: health
+    port: 13133
+    targetPort: 13133
+    protocol: TCP
+  - name: metrics
+    port: 8888
+    targetPort: 8888
+    protocol: TCP

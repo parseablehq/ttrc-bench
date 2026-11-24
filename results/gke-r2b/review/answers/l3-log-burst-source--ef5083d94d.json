@@ -1,0 +1,1 @@
+{"incident_occurred": true, "service": "cart", "operation": "POST /oteldemo.CartService/EmptyCart", "log_records": 11}

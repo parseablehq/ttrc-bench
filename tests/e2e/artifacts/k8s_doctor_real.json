@@ -1,0 +1,19 @@
+{
+ "unbootstrapped_refusals": 6,
+ "bootstrapped": true,
+ "doctor": [
+  "kind     b1-lgtm/backend                2.0 CPU   2.50 GiB",
+  "kind     b1-lgtm/ingest                 0.5 CPU   0.25 GiB",
+  "kind     b3-clickhouse/backend          2.0 CPU   2.50 GiB",
+  "kind     b3-clickhouse/ingest           0.5 CPU   0.25 GiB",
+  "kind     b4-parseable/backend           2.0 CPU   2.50 GiB",
+  "kind     b4-parseable/ingest            0.5 CPU   0.25 GiB",
+  "gke      b1-lgtm/backend                8.0 CPU  32.00 GiB",
+  "gke      b1-lgtm/ingest                 2.0 CPU   2.00 GiB",
+  "gke      b3-clickhouse/backend          8.0 CPU  32.00 GiB",
+  "gke      b3-clickhouse/ingest           2.0 CPU   2.00 GiB",
+  "gke      b4-parseable/backend           8.0 CPU  32.00 GiB",
+  "gke      b4-parseable/ingest            2.0 CPU   2.00 GiB",
+  "doctor: ok"
+ ]
+}

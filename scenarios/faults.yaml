@@ -1,0 +1,122 @@
+# Fault catalogue for OpenTelemetry Demo 3.1.0. Variants are copied from the pinned flagd file and checked against
+# it by `otb scenario check-catalogue`; the injector also checks them against the live flagd config before a capture.
+# root_service is where the fault is implemented (from the demo source); symptom names the reference measure
+# schedule_check uses to find the observed onset, offset and signature. `unverified` means no rule exists:
+# schedule_check reports the fault as unchecked and it binds no task. A rule marked `untested` was written from the
+# demo source and has not yet been checked against a capture; gke-calib holds the capture to check it on.
+format: otb-faults/1
+demo_repo: https://github.com/open-telemetry/opentelemetry-demo
+demo_tag: "3.1.0"
+demo_commit: dedc0178918e260823323b8d95005a8cb924b007
+flagd_file: src/flagd/demo.flagd.json
+flagd_sha256: c0f6ac8ac14bcaae3551d8a356ff109067fdfaefe052e0820370d5a3b542c047
+off_variant: "off"
+
+excluded:
+  emitRawPii: "not a failure: toggles PII attributes, which the demo collector's redaction processor rewrites"
+
+faults:
+  adFailure:
+    class: error_injection
+    root_service: ad
+    variants: ["on"]
+    symptom: { measure: error_signatures, service: ad }
+  adHighCpu:
+    class: cpu_saturation
+    root_service: ad
+    variants: ["on"]
+    # untested. CPULoad spins worker threads inside ad's 250m CPU limit, so GetAds waits on throttled CPU.
+    symptom: { measure: slow_spans, service: ad, min_duration_ms: 100 }
+  adManualGc:
+    class: gc_pressure
+    root_service: ad
+    variants: ["on"]
+    # untested. Every GetAds logs at WARN "Feature Flag adManualGc enabled, performing a manual gc now".
+    symptom: { measure: error_signatures, service: ad }
+  aiRunawayAgent:
+    class: agent_loop
+    root_service: agent
+    variants: ["on"]
+    requires: compose.agent.yaml
+    symptom: { unverified: "the agent service is not in the default compose; no capture yet" }
+  aiSlowResponse:
+    class: latency_injection
+    root_service: agent
+    variants: ["10sec", "5sec"]
+    requires: compose.agent.yaml
+    symptom: { measure: slow_spans, service: agent, min_duration_ms: 4000 }
+  cartFailure:
+    class: error_injection
+    # The flag points the cart at an unreachable Valkey; its telemetry reads "Wasn't able to connect to redis".
+    also_accept: [dependency_unreachable, cache_failure]
+    root_service: cart
+    variants: ["10%", "100%", "25%", "50%", "75%", "90%"]
+    symptom: { measure: error_signatures, service: cart }
+  emailMemoryLeak:
+    class: memory_leak
+    root_service: email
+    variants: ["10000x", "1000x", "100x", "10x", "1x"]
+    # untested. Each email keeps a body padded to N times its size, so email reaches its 100Mi limit and is
+    # OOM-killed; checkout then logs at WARN "failed to send order confirmation: failed POST to email service".
+    symptom: { measure: error_signatures, service: checkout }
+  failedReadinessProbe:
+    class: readiness_failure
+    root_service: cart
+    variants: ["on"]
+    symptom: { unverified: "no readiness probe calls the health check the flag fails: Compose has none, and nor do
+      the chart defaults or deploy/k8s/demo" }
+  imageSlowLoad:
+    class: latency_injection
+    root_service: frontend-proxy
+    variants: ["10sec", "5sec"]
+    note: "frontend-web asks envoy (frontend-proxy) for a fault delay on image requests"
+    symptom: { measure: slow_spans, service: frontend-proxy, min_duration_ms: 4000 }
+  intlShippingSlowdown:
+    class: latency_injection
+    root_service: shipping
+    variants: ["10sec", "5sec"]
+    symptom: { measure: slow_spans, service: shipping, min_duration_ms: 4000 }
+  kafkaQueueProblems:
+    class: queue_backlog
+    root_service: checkout
+    variants: ["on"]
+    note: "checkout floods the orders topic and fraud-detection adds consumer delay"
+    symptom: { unverified: "checkout evaluates the flag only when KAFKA_ADDR is set; neither the Compose capture
+      nor deploy/k8s/demo runs Kafka" }
+  loadGeneratorFloodHomepage:
+    class: traffic_flood
+    root_service: load-generator
+    variants: ["on"]
+    # untested. Each flood_home task sends 100 GET / requests, more than frontend's 500m CPU limit serves on time.
+    symptom: { measure: slow_spans, service: frontend, min_duration_ms: 1000 }
+  paymentFailure:
+    class: error_injection
+    root_service: payment
+    variants: ["10%", "100%", "25%", "50%", "75%", "90%"]
+    note: "variant 90% is 0.95 in the flagd file"
+    symptom: { measure: error_signatures, service: payment }
+  paymentUnreachable:
+    class: dependency_unreachable
+    root_service: payment
+    variants: ["on"]
+    note: "checkout evaluates the flag and calls a bad payment address, so the errors show in checkout"
+    symptom: { measure: error_signatures, service: checkout }
+  productCatalogFailure:
+    class: error_injection
+    root_service: product-catalog
+    variants: ["on"]
+    note: "targeted: fails only for one product id. The flag's targeting returns its own variants, so writing
+      defaultVariant (what the injector does) changes nothing; flagd-ui writes targeting.if[1] instead"
+    symptom: { measure: error_signatures, service: product-catalog }
+  productCatalogLockContention:
+    class: lock_contention
+    root_service: product-catalog
+    variants: ["on"]
+    # untested. Every 10 s the service holds an ACCESS EXCLUSIVE lock on catalog.products for 30 s, so queries wait.
+    symptom: { measure: slow_spans, service: product-catalog, min_duration_ms: 1000 }
+  recommendationCacheFailure:
+    class: cache_failure
+    root_service: recommendation
+    variants: ["on"]
+    # untested. Each cache miss grows the cached id list by a quarter, so ListRecommendations slows as it grows.
+    symptom: { measure: slow_spans, service: recommendation, min_duration_ms: 200 }

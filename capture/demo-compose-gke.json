@@ -1,0 +1,402 @@
+{
+ "ad": {
+  "image": "ghcr.io/open-telemetry/demo:latest-ad",
+  "environment": {
+   "AD_PORT": "9555",
+   "AD_PROMETHEUS_PORT": "9465",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "OTEL_EXPERIMENTAL_SDK_TELEMETRY_VERSION": "latest",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_LOGS_EXPORTER": "otlp",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=medium",
+   "OTEL_SERVICE_NAME": "ad"
+  },
+  "ports": [
+   9465,
+   9555
+  ],
+  "memory_bytes": 314572800
+ },
+ "astronomy-db": {
+  "image": "postgres:18.4",
+  "environment": {
+   "POSTGRES_PASSWORD": "changeit"
+  },
+  "ports": [
+   5432
+  ],
+  "memory_bytes": 83886080
+ },
+ "cart": {
+  "image": "ghcr.io/open-telemetry/demo:latest-cart",
+  "environment": {
+   "ASPNETCORE_URLS": "http://*:7070",
+   "CART_PORT": "7070",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=high",
+   "OTEL_SERVICE_NAME": "cart",
+   "VALKEY_ADDR": "valkey-cart:6379"
+  },
+  "ports": [
+   7070
+  ],
+  "memory_bytes": 167772160
+ },
+ "checkout": {
+  "image": "ghcr.io/open-telemetry/demo:latest-checkout",
+  "environment": {
+   "CART_ADDR": "cart:7070",
+   "CHECKOUT_PORT": "5050",
+   "CURRENCY_ADDR": "currency:7001",
+   "EMAIL_ADDR": "http://email:6060",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "GOMEMLIMIT": "16MiB",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+   "OTEL_GO_X_OBSERVABILITY": "true",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=critical",
+   "OTEL_SERVICE_NAME": "checkout",
+   "PAYMENT_ADDR": "payment:50051",
+   "PRODUCT_CATALOG_ADDR": "product-catalog:3550",
+   "SHIPPING_ADDR": "http://shipping:50050"
+  },
+  "ports": [
+   5050
+  ],
+  "memory_bytes": 20971520
+ },
+ "currency": {
+  "image": "ghcr.io/open-telemetry/demo:latest-currency",
+  "environment": {
+   "CURRENCY_PORT": "7001",
+   "IPV6_ENABLED": "false",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=high",
+   "OTEL_SERVICE_NAME": "currency",
+   "VERSION": "3.0.0"
+  },
+  "ports": [
+   7001
+  ],
+  "memory_bytes": 20971520
+ },
+ "email": {
+  "image": "ghcr.io/open-telemetry/demo:latest-email",
+  "environment": {
+   "APP_ENV": "production",
+   "EMAIL_PORT": "6060",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=medium",
+   "OTEL_SERVICE_NAME": "email"
+  },
+  "ports": [
+   6060
+  ],
+  "memory_bytes": 104857600
+ },
+ "flagd": {
+  "image": "ghcr.io/open-feature/flagd:v0.16.0",
+  "environment": {
+   "GOMEMLIMIT": "60MiB",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low",
+   "OTEL_SERVICE_NAME": "flagd"
+  },
+  "ports": [
+   8013,
+   8016
+  ],
+  "memory_bytes": 78643200
+ },
+ "flagd-ui": {
+  "image": "ghcr.io/open-telemetry/demo:latest-flagd-ui",
+  "environment": {
+   "FLAGD_UI_PORT": "4000",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low",
+   "OTEL_SERVICE_NAME": "flagd-ui",
+   "PHX_HOST": "localhost",
+   "SECRET_KEY_BASE": "yYrECL4qbNwleYInGJYvVnSkwJuSQJ4ijPTx5tirGUXrbznFIBFVJdPl5t6O9ASw"
+  },
+  "ports": [
+   4000
+  ],
+  "memory_bytes": 805306368
+ },
+ "frontend": {
+  "image": "ghcr.io/open-telemetry/demo:latest-frontend",
+  "environment": {
+   "AD_ADDR": "ad:9555",
+   "CART_ADDR": "cart:7070",
+   "CHECKOUT_ADDR": "checkout:5050",
+   "CURRENCY_ADDR": "currency:7001",
+   "ENV_PLATFORM": "local",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "FRONTEND_ADDR": "frontend:8080",
+   "OTEL_COLLECTOR_HOST": "otel-collector",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=critical",
+   "OTEL_SERVICE_NAME": "frontend",
+   "PORT": "8080",
+   "PRODUCT_CATALOG_ADDR": "product-catalog:3550",
+   "PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT": "http://localhost:8080/otlp-http/v1/traces",
+   "RECOMMENDATION_ADDR": "recommendation:9001",
+   "SHIPPING_ADDR": "http://shipping:50050",
+   "WEB_OTEL_SERVICE_NAME": "frontend-web"
+  },
+  "ports": [
+   8080
+  ],
+  "memory_bytes": 262144000
+ },
+ "frontend-proxy": {
+  "image": "ghcr.io/open-telemetry/demo:latest-frontend-proxy",
+  "environment": {
+   "CHATBOT_HOST": "chatbot",
+   "CHATBOT_PORT": "7860",
+   "ENVOY_ADDR": "0.0.0.0",
+   "ENVOY_ADMIN_PORT": "10000",
+   "ENVOY_PORT": "8080",
+   "FIREPIT_HOST": "firepit",
+   "FIREPIT_PORT": "8080",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "FLAGD_UI_HOST": "flagd-ui",
+   "FLAGD_UI_PORT": "4000",
+   "FRONTEND_HOST": "frontend",
+   "FRONTEND_PORT": "8080",
+   "GRAFANA_HOST": "grafana",
+   "GRAFANA_PORT": "3000",
+   "IMAGE_PROVIDER_HOST": "image-provider",
+   "IMAGE_PROVIDER_PORT": "8081",
+   "JAEGER_HOST": "jaeger",
+   "JAEGER_UI_PORT": "16686",
+   "LOCUST_WEB_HOST": "load-generator",
+   "LOCUST_WEB_PORT": "8089",
+   "OPAMP_SERVER_HOST": "opamp-server",
+   "OPAMP_SERVER_UI_PORT": "4321",
+   "OTEL_COLLECTOR_HOST": "otel-collector",
+   "OTEL_COLLECTOR_PORT_GRPC": "4317",
+   "OTEL_COLLECTOR_PORT_HTTP": "4318",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=critical",
+   "OTEL_SERVICE_NAME": "frontend-proxy",
+   "OTEL_SERVICE_NAMESPACE": "opentelemetry-demo",
+   "TELEMETRY_DOCS_HOST": "telemetry-docs",
+   "TELEMETRY_DOCS_PORT": "8000"
+  },
+  "ports": [
+   8080,
+   10000
+  ],
+  "memory_bytes": 94371840
+ },
+ "image-provider": {
+  "image": "ghcr.io/open-telemetry/demo:latest-image-provider",
+  "environment": {
+   "IMAGE_PROVIDER_PORT": "8081",
+   "OTEL_COLLECTOR_HOST": "otel-collector",
+   "OTEL_COLLECTOR_PORT_GRPC": "4317",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low",
+   "OTEL_SERVICE_NAME": "image-provider"
+  },
+  "ports": [
+   8081
+  ],
+  "memory_bytes": 125829120
+ },
+ "load-generator": {
+  "image": "ghcr.io/open-telemetry/demo:latest-load-generator",
+  "environment": {
+   "FLAGD_HOST": "flagd",
+   "FLAGD_OFREP_PORT": "8016",
+   "FLAGD_PORT": "8013",
+   "LOCUST_AUTOSTART": "true",
+   "LOCUST_BROWSER_TRAFFIC_ENABLED": "true",
+   "LOCUST_BROWSER_USER_WEIGHT": "1",
+   "LOCUST_HEADLESS": "false",
+   "LOCUST_HOST": "http://frontend-proxy:8080",
+   "LOCUST_HTTP_USER_WEIGHT": "9",
+   "LOCUST_USERS": "5",
+   "LOCUST_WEB_HOST": "0.0.0.0",
+   "LOCUST_WEB_PORT": "8089",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_PYTHON_SDK_INTERNAL_METRICS_ENABLED": "true",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low",
+   "OTEL_SERVICE_NAME": "load-generator",
+   "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python"
+  },
+  "ports": [
+   8089
+  ],
+  "memory_bytes": 1572864000
+ },
+ "otel-collector": {
+  "image": "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.159.0",
+  "environment": {
+   "AD_PROMETHEUS_PORT": "9465",
+   "FRONTEND_PROXY_ADDR": "frontend-proxy:8080",
+   "GOMEMLIMIT": "800MiB",
+   "HOST_FILESYSTEM": "/",
+   "IMAGE_PROVIDER_HOST": "image-provider",
+   "IMAGE_PROVIDER_PORT": "8081",
+   "OTB_GATEWAY": "http://host.docker.internal:4318",
+   "OTB_INSTANCE": "local",
+   "OTEL_COLLECTOR_HOST": "otel-collector",
+   "OTEL_COLLECTOR_PORT_GRPC": "4317",
+   "OTEL_COLLECTOR_PORT_HTTP": "4318",
+   "POSTGRES_HOST": "astronomy-db",
+   "POSTGRES_MONITORING_PASSWORD": "monitoring_password",
+   "POSTGRES_PORT": "5432"
+  },
+  "ports": [
+   4317,
+   4318
+  ],
+  "memory_bytes": 1073741824
+ },
+ "payment": {
+  "image": "ghcr.io/open-telemetry/demo:latest-payment",
+  "environment": {
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "IPV6_ENABLED": "false",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_EXPORTER_OTLP_PROTOCOL": "grpc",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=critical",
+   "OTEL_SERVICE_NAME": "payment",
+   "PAYMENT_PORT": "50051"
+  },
+  "ports": [
+   50051
+  ],
+  "memory_bytes": 146800640
+ },
+ "product-catalog": {
+  "image": "ghcr.io/open-telemetry/demo:latest-product-catalog",
+  "environment": {
+   "DB_CONNECTION_STRING": "postgres://astronomy_user:astronomy_password@astronomy-db/astronomy_db?sslmode=disable",
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "GOMEMLIMIT": "16MiB",
+   "OTEL_CONFIG_FILE": "/otel-config.yml",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_GO_X_OBSERVABILITY": "true",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=high",
+   "OTEL_SEMCONV_STABILITY_OPT_IN": "database",
+   "OTEL_SERVICE_NAME": "product-catalog",
+   "PRODUCT_CATALOG_PORT": "3550"
+  },
+  "ports": [
+   3550
+  ],
+  "memory_bytes": 20971520
+ },
+ "quote": {
+  "image": "ghcr.io/open-telemetry/demo:latest-quote",
+  "environment": {
+   "IPV6_ENABLED": "false",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_PHP_AUTOLOAD_ENABLED": "true",
+   "OTEL_PHP_INTERNAL_METRICS_ENABLED": "true",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=low",
+   "OTEL_SERVICE_NAME": "quote",
+   "QUOTE_PORT": "8090"
+  },
+  "ports": [
+   8090
+  ],
+  "memory_bytes": 41943040
+ },
+ "recommendation": {
+  "image": "ghcr.io/open-telemetry/demo:latest-recommendation",
+  "environment": {
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4317",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_PYTHON_LOG_CORRELATION": "true",
+   "OTEL_PYTHON_SDK_INTERNAL_METRICS_ENABLED": "true",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=medium",
+   "OTEL_SERVICE_NAME": "recommendation",
+   "PRODUCT_CATALOG_ADDR": "product-catalog:3550",
+   "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python",
+   "RECOMMENDATION_PORT": "9001"
+  },
+  "ports": [
+   9001
+  ],
+  "memory_bytes": 524288000
+ },
+ "shipping": {
+  "image": "ghcr.io/open-telemetry/demo:latest-shipping",
+  "environment": {
+   "FLAGD_HOST": "flagd",
+   "FLAGD_PORT": "8013",
+   "IPV6_ENABLED": "false",
+   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otel-collector:4318",
+   "OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION": "explicit_bucket_histogram",
+   "OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE": "cumulative",
+   "OTEL_EXPORTER_OTLP_PROTOCOL": "http/protobuf",
+   "OTEL_RESOURCE_ATTRIBUTES": "service.namespace=opentelemetry-demo,service.version=3.0.0,service.criticality=high",
+   "OTEL_SERVICE_NAME": "shipping",
+   "QUOTE_ADDR": "http://quote:8090",
+   "SHIPPING_PORT": "50050"
+  },
+  "ports": [
+   50050
+  ],
+  "memory_bytes": 20971520
+ },
+ "telemetry-docs": {
+  "image": "ghcr.io/open-telemetry/demo:latest-telemetry-docs",
+  "environment": {
+   "OTEL_COLLECTOR_HOST": "otel-collector",
+   "OTEL_COLLECTOR_PORT_GRPC": "4317",
+   "OTEL_SERVICE_NAME": "telemetry-docs",
+   "TELEMETRY_DOCS_PORT": "8000"
+  },
+  "ports": [
+   8000
+  ],
+  "memory_bytes": 104857600
+ },
+ "valkey-cart": {
+  "image": "ghcr.io/valkey-io/valkey:9.0.4-alpine3.23",
+  "environment": {},
+  "ports": [
+   6379
+  ],
+  "memory_bytes": 20971520
+ }
+}

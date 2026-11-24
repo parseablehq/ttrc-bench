@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: otb-bg
+  labels:
+    otb.role: background
+    pod-security.kubernetes.io/enforce: restricted

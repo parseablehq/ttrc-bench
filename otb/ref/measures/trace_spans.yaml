@@ -1,0 +1,8 @@
+description: Spans of one trace starting in the window (span events are not spans).
+params:
+  window: window
+  trace_id: str
+columns:
+- n
+exact_on:
+- traces.span_count
